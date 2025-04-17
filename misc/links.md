@@ -25,8 +25,15 @@ https://github.com/agrumery/aGrUM
 
 https://github.com/pangeo-data/climpred
 
+https://chatgpt.com/share/66f30aba-1f48-800c-8ac8-2961d99ddcbc
+
 # pdfs
 
 https://github.com/icpac-igad/ibf-thresholds-triggers/blob/kmj/docs/build/rinoh/ibf-thresholds-triggers.pdf
 
-https://nhess.copernicus.org/preprints/nhess-2019-44/nhess-2019-44.pdf
+https://nhess.copernicus.org/articles/24/4661/2024/nhess-24-4661-2024.pdf
+
+https://app.asana.com/1/741126496826482/project/1208144330782463/task/1208393275097203
+
+
+
