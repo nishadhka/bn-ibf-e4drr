@@ -9,9 +9,13 @@ https://climsoft.org/
 
 https://www.earthcube.org/pangeo-forge
 
+https://chatgpt.com/share/66f30aba-1f48-800c-8ac8-2961d99ddcbc
+
 # github
 
-https://icpac-igad.github.io/e4drr/
+https://github.com/icpac-igad/e4drr
+
+https://github.com/icpac-igad/ibf-thresholds-triggers
 
 https://github.com/icpac-igad/bn-ibf
 
@@ -25,7 +29,6 @@ https://github.com/agrumery/aGrUM
 
 https://github.com/pangeo-data/climpred
 
-https://chatgpt.com/share/66f30aba-1f48-800c-8ac8-2961d99ddcbc
 
 # pdfs
 
