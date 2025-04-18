@@ -1,0 +1,15 @@
+SPI, Standard Precipitation Index
+MAM,
+SEAS5, Seasonal Forecasting System
+CHIRPS, Climate Hazards Group InfraRed Precipitation with Station data
+ECMWF, European Centre for Medium-Range Weather Forecasts
+AA, Anticipatory Action
+ENSO, El Niño–Southern Oscillation
+e4drr,
+ibf,
+SIOD, Subtropical Indian Ocean Dipole
+SADC, Southern African Development Community
+WFP, World Food Programme
+EWS, early warning system
+AUROC, area under the receiver operating characteristic
+
