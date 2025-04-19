@@ -22,7 +22,7 @@ def write_latex_file(acro_to_desc, out_path):
             if desc is None:
                 desc = ""
             f.write("\\item {\\bf " + acro + "}, " + desc + "\n")
-        f.write("\\end{itemize}")
+        f.write("\\end{itemize}\n")
         f.write("\\end{document}\n")
 
 

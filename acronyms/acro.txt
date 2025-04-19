@@ -12,4 +12,6 @@ SADC, Southern African Development Community
 WFP, World Food Programme
 EWS, early warning system
 AUROC, area under the receiver operating characteristic
+bn, Bayesian Network
+bnet, Bayesian Network
 
