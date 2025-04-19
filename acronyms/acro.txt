@@ -1,12 +1,12 @@
 SPI, Standard Precipitation Index
-MAM,
+SPI-MAM,  SPI forecast for  March April May
 SEAS5, Seasonal Forecasting System
 CHIRPS, Climate Hazards Group InfraRed Precipitation with Station data
 ECMWF, European Centre for Medium-Range Weather Forecasts
 AA, Anticipatory Action
 ENSO, El Niño–Southern Oscillation
-e4drr,
-ibf,
+e4drr, project name, 4 E's: 1. Ensemble Prediction system 2. Event storylines 3. Evaluation of risk (Impact based forecasting) 4. Enhanced decision making. drr means disaster risk reduction.
+ibf, impact based forecasting
 SIOD, Subtropical Indian Ocean Dipole
 SADC, Southern African Development Community
 WFP, World Food Programme
