@@ -24,4 +24,7 @@ oc, observation count
 FA, False Alarms, $N_{1|0}$
 CN, Correct Negatives, $N_{0|0}$
 bs, bias score, $BS = P(1|1)-P(1|0)$
-
+CDI, Combined Drought Indicator
+IMERG, Integrated Multi-satellite Retrievals for GPM
+EPS, Ensemble Prediction System
+GPM, Global Precipitation Measurement
