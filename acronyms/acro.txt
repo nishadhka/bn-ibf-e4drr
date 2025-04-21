@@ -14,4 +14,7 @@ EWS, early warning system
 AUROC, area under the receiver operating characteristic
 bn, Bayesian Network
 bnet, Bayesian Network
+FAR, False Alarm Rate or Ratio, $Rate=\frac{N_{1|0}}{N_{1|0} + N_{0|0}}=P(1|0)\leq 1$, $Ratio=\frac{N_{1|0}}{N_{1|0} + N_{1|1}}\leq 1$
+HR, Hit Rate $HR=\frac{N_{1|1}}{N_{0|1} + N_{1|1}}=P(1|1)$
+SPI-JJAS, SPI forecast for June, July, August, September
 
