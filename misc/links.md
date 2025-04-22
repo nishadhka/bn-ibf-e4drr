@@ -11,6 +11,8 @@ https://www.earthcube.org/pangeo-forge
 
 https://chatgpt.com/share/66f30aba-1f48-800c-8ac8-2961d99ddcbc
 
+https://dynamical.org/catalog/noaa-gefs-forecast-35-day/
+
 # github
 
 https://github.com/icpac-igad/e4drr
