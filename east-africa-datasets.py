@@ -1,0 +1,607 @@
+import numpy as np
+import pandas as pd
+import xarray as xr
+import geopandas as gpd
+from shapely.geometry import Polygon, Point
+import datetime as dt
+from scipy.ndimage import gaussian_filter
+import random
+
+from utils import *
+
+# Define East Africa region parameters
+lat_min = -12
+#lat_max = lat_min + 157 * 0.25  # Approximately 27.25
+lat_max = -11.25
+
+lon_min = 21
+#lon_max = lon_min + 28 * 0.25   # Approximately 28
+lon_max = 21.75
+
+
+# Create lat/lon coordinates
+# lats = np.linspace(lat_min, lat_max, 157)
+# lons = np.linspace(lon_min, lon_max, 28)
+lats = np.linspace(lat_min, lat_max, 3)
+lons = np.linspace(lon_min, lon_max, 3)
+
+print(f"Region: Lat from {lat_min} to {lat_max}, Lon from {lon_min} to {lon_max}")
+print(f"Grid size: {len(lats)}x{len(lons)} ({len(lats)*len(lons)} points)")
+
+# Helper function to generate spatially correlated random fields
+def generate_correlated_field(lats, lons, mean=5, std=2, correlation_scale=3.0):
+    """Generate a spatially correlated random field"""
+    ny, nx = len(lats), len(lons)
+    field = np.random.normal(mean, std, size=(ny, nx))
+    
+    # Apply smoothing for spatial correlation
+    field = gaussian_filter(field, sigma=correlation_scale)
+    
+    # Ensure non-negative values for precipitation
+    field = np.maximum(field, 0)
+    return field
+
+# 1. Extreme Value Analysis Dataset
+def create_extreme_value_analysis():
+    """Create dataset for extreme value analysis with different return
+    periods"""
+    return_periods = [2, 5, 8, 10, 20]
+    variables = {}
+    
+    # Create data for each return period
+    for period in return_periods:
+        # Higher return periods have higher values
+        scale_factor = np.sqrt(period / 2)
+        field = generate_correlated_field(lats, lons, 
+                                          mean=20 * scale_factor, 
+                                          std=10 * scale_factor, 
+                                          correlation_scale=3.0)
+        variables[f"return_period_{period}yr"] = (["lat", "lon"], field)
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars=variables,
+        coords={
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "Extreme value analysis for precipitation in East Africa",
+            "units": "mm/3hr",
+            "resolution": "0.25 degrees"
+        }
+    )
+    
+    return ds
+
+# 2. ECMWF Forecast Dataset
+def create_ecmwf_forecast():
+    """Create ECMWF forecast dataset with 51 ensemble members"""
+    members = 51
+    time_steps = 24  # 3-hourly for 3 days
+    
+    # Create time coordinates
+    base_time = np.datetime64('2025-05-10T00:00')
+    times = base_time + np.arange(time_steps) * np.timedelta64(3, 'h')
+    
+    # Generate base field for spatial correlation
+    base_field = generate_correlated_field(lats, lons, mean=5,
+                                           std=2, correlation_scale=3.0)
+    
+    # Create data array for all members and time steps
+    data = np.zeros((members, time_steps, len(lats), len(lons)))
+    
+    for m in range(members):
+        # Add ensemble spread factor
+        ensemble_factor = 1.0 + (np.random.random() - 0.5) * 0.4
+        
+        for t in range(time_steps):
+            # Create temporal patterns (e.g., diurnal cycle)
+            time_factor = 1.0 + 0.5 * np.sin(t * np.pi / 8)  # Diurnal cycle
+            
+            # Add ensemble and temporal variations to base field
+            field = base_field * time_factor * ensemble_factor
+            
+            # Add some random noise
+            noise = np.random.normal(0, 1, size=base_field.shape) * 0.2 * base_field
+            field += noise
+            
+            # Ensure non-negative values
+            field = np.maximum(field, 0)
+            
+            data[m, t, :, :] = field
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "precipitation": (["member", "time", "lat", "lon"], data)
+        },
+        coords={
+            "member": np.arange(1, members + 1),
+            "time": times,
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "ECMWF 3-hourly precipitation forecast",
+            "units": "mm/3hr",
+            "resolution": "0.25 degrees"
+        }
+    )
+    
+    return ds
+
+# 3. GEFS Forecast Dataset
+def create_gefs_forecast():
+    """Create GEFS forecast dataset with 30 ensemble members"""
+    members = 30
+    time_steps = 24  # 3-hourly for 3 days
+    
+    # Create time coordinates
+    base_time = np.datetime64('2025-05-10T00:00')
+    times = base_time + np.arange(time_steps) * np.timedelta64(3, 'h')
+    
+    # Generate base field for spatial correlation
+    # GEFS typically has different characteristics than ECMWF
+    base_field = generate_correlated_field(lats, lons, mean=6, std=2.5, correlation_scale=4.0)
+    
+    # Create data array for all members and time steps
+    data = np.zeros((members, time_steps, len(lats), len(lons)))
+    
+    for m in range(members):
+        # Add ensemble spread factor (GEFS typically has larger spread than ECMWF)
+        ensemble_factor = 1.0 + (np.random.random() - 0.5) * 0.6
+        
+        for t in range(time_steps):
+            # Create temporal patterns with slight offset from ECMWF
+            time_factor = 1.0 + 0.6 * np.sin((t + 1) * np.pi / 8)  # Diurnal cycle with offset
+            
+            # Add ensemble and temporal variations to base field
+            field = base_field * time_factor * ensemble_factor
+            
+            # Add some random noise
+            noise = np.random.normal(0, 1, size=base_field.shape) * 0.3 * base_field
+            field += noise
+            
+            # Ensure non-negative values
+            field = np.maximum(field, 0)
+            
+            data[m, t, :, :] = field
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "precipitation": (["member", "time", "lat", "lon"], data)
+        },
+        coords={
+            "member": np.arange(1, members + 1),
+            "time": times,
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "GEFS 3-hourly precipitation forecast",
+            "units": "mm/3hr",
+            "resolution": "0.25 degrees"
+        }
+    )
+    
+    return ds
+
+# 4. IMERG Observation Dataset
+def create_imerg_observation():
+    """Create IMERG observation dataset"""
+    # Generate a realistic observation field
+    field = generate_correlated_field(lats, lons, mean=4.5, std=3, correlation_scale=2)
+    
+    # Create time coordinate (single time step)
+    time = np.array([np.datetime64('2025-05-10T00:00')])
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "precipitation": (["time", "lat", "lon"], field.reshape(1, len(lats), len(lons)))
+        },
+        coords={
+            "time": time,
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "IMERG satellite precipitation observation",
+            "units": "mm/day",
+            "resolution": "0.25 degrees"
+        }
+    )
+    
+    return ds
+
+# 5. RFEv2 Observation Dataset
+def create_rfev2_observation():
+    """Create RFEv2 observation dataset"""
+    # Generate a realistic observation field (slightly different from IMERG)
+    field = generate_correlated_field(lats, lons, mean=5.2, std=2.8, correlation_scale=3)
+    
+    # Create time coordinate (single time step)
+    time = np.array([np.datetime64('2025-05-10T00:00')])
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "precipitation": (["time", "lat", "lon"], field.reshape(1, len(lats), len(lons)))
+        },
+        coords={
+            "time": time,
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "RFEv2 satellite precipitation observation",
+            "units": "mm/day",
+            "resolution": "0.25 degrees"
+        }
+    )
+    
+    return ds
+
+# 6. GEOSFM Model Forecast
+def create_geosfm_forecast():
+    """Create GEOSFM forecast for 300 random points in DataFrame format"""
+    num_points = 300
+    time_steps = 40  # 5 days, 8 steps per day
+    
+    # Generate random points
+    random_lats = np.random.uniform(lat_min, lat_max, num_points)
+    random_lons = np.random.uniform(lon_min, lon_max, num_points)
+    
+    # Create base time
+    base_time = dt.datetime(2025, 5, 10)
+    
+    # Generate forecast data
+    data = []
+    
+    for point_id in range(num_points):
+        for t in range(time_steps):
+            # Create timestamp - 3-hourly
+            timestamp = base_time + dt.timedelta(hours=t * 3)
+            
+            # Generate flow value with some time correlation
+            base_precip = 5 + 3 * np.sin(t * np.pi / 8)  # Diurnal pattern
+            noise = (np.random.random() - 0.5) * 4
+            precip = max(0, base_precip + noise)
+            
+            # Generate streamflow with lag from precipitation
+            base_flow = 20 + 10 * np.sin((t - 2) * np.pi / 8)  # Lagged from precip
+            flow_noise = (np.random.random() - 0.5) * 8
+            flow = max(0, base_flow + flow_noise + precip * 2)
+            
+            data.append({
+                'point_id': point_id + 1,
+                'lat': random_lats[point_id],
+                'lon': random_lons[point_id],
+                'timestamp': timestamp,
+                'forecast_hour': t * 3,
+                'precipitation_mm': round(precip, 2),
+                'streamflow_m3s': round(flow, 2)
+            })
+    
+    # Create DataFrame
+    df = pd.DataFrame(data)
+    
+    return df
+
+# 7. Population Density Dataset
+def create_population_density():
+    """Create population density dataset"""
+    # Generate base population density field
+    base_density = generate_correlated_field(lats, lons, mean=100, std=50, correlation_scale=8)
+    
+    # Add population centers (cities)
+    cities = [
+        {"lat_idx": int(0.3 * len(lats)), "lon_idx": int(0.6 * len(lons)), "size": 10, "pop": 2000},
+        {"lat_idx": int(0.7 * len(lats)), "lon_idx": int(0.4 * len(lons)), "size": 8, "pop": 1500},
+        {"lat_idx": int(0.5 * len(lats)), "lon_idx": int(0.5 * len(lons)), "size": 12, "pop": 3000}
+    ]
+    
+    density = base_density.copy()
+    
+    for city in cities:
+        city_y, city_x = city["lat_idx"], city["lon_idx"]
+        size = city["size"]
+        pop = city["pop"]
+        
+        # Add population based on distance from city center
+        y_grid, x_grid = np.mgrid[0:len(lats), 0:len(lons)]
+        dist = np.sqrt((y_grid - city_y)**2 + (x_grid - city_x)**2)
+        
+        # Add population with exponential decay from center
+        density += pop * np.exp(-dist / (size / 2)) * (dist < size)
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "population_density": (["lat", "lon"], density)
+        },
+        coords={
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "Population density in East Africa",
+            "units": "people/km²",
+            "resolution": "0.25 degrees"
+        }
+    )
+    
+    return ds
+
+# 8. Road Density Dataset
+def create_road_density():
+    """Create road density dataset at 5km resolution"""
+    # Generate base road density
+    base_density = generate_correlated_field(lats, lons, mean=0.5, std=0.3, correlation_scale=10)
+    
+    road_density = base_density.copy()
+    
+    # Add major road corridors
+    roads = [
+        # Road 1: North-South
+        {"start": (0, int(0.3 * len(lons))), 
+         "end": (len(lats) - 1, int(0.7 * len(lons))), 
+         "width": 3},
+        # Road 2: East-West
+        {"start": (int(0.2 * len(lats)), 0), 
+         "end": (int(0.8 * len(lats)), len(lons) - 1), 
+         "width": 2},
+        # Road 3: Diagonal
+        {"start": (int(0.4 * len(lats)), int(0.2 * len(lons))), 
+         "end": (int(0.6 * len(lats)), int(0.8 * len(lons))), 
+         "width": 2}
+    ]
+    
+    for road in roads:
+        start_y, start_x = road["start"]
+        end_y, end_x = road["end"]
+        width = road["width"]
+        
+        # Calculate direction vector
+        dy = end_y - start_y
+        dx = end_x - start_x
+        distance = np.sqrt(dy**2 + dx**2)
+        
+        # Draw the road
+        for t in range(int(distance) + 1):
+            y = int(start_y + dy * t / distance)
+            x = int(start_x + dx * t / distance)
+            
+            if 0 <= y < len(lats) and 0 <= x < len(lons):
+                # Add road density in the vicinity
+                y_min = max(0, y - width)
+                y_max = min(len(lats), y + width + 1)
+                x_min = max(0, x - width)
+                x_max = min(len(lons), x + width + 1)
+                
+                for i in range(y_min, y_max):
+                    for j in range(x_min, x_max):
+                        dist = np.sqrt((i - y)**2 + (j - x)**2)
+                        if dist <= width:
+                            road_density[i, j] += 2 * (1 - dist / width)
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "road_density": (["lat", "lon"], road_density)
+        },
+        coords={
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "Road density in East Africa",
+            "units": "km/km²",
+            "resolution": "5km"
+        }
+    )
+    
+    return ds
+
+# 9. Impact Model Dataset
+def create_impact_model():
+    """Create impact model dataset"""
+    # Generate hazard layer (e.g., flood depth)
+    hazard = generate_correlated_field(lats, lons, mean=0.5, std=0.4, correlation_scale=5)
+    
+    # Generate vulnerability layer
+    vulnerability = generate_correlated_field(lats, lons, mean=0.4, std=0.3, correlation_scale=6)
+    
+    # Combine hazard and vulnerability to create impact
+    impact = hazard * vulnerability * 10
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "hazard": (["lat", "lon"], hazard),
+            "vulnerability": (["lat", "lon"], vulnerability),
+            "impact": (["lat", "lon"], impact)
+        },
+        coords={
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "Impact model for East Africa",
+            "hazard_units": "normalized index",
+            "vulnerability_units": "normalized index",
+            "impact_units": "impact index"
+        }
+    )
+    
+    return ds
+
+# 10. Forecast Verification Dataset
+def create_forecast_verification():
+    """Create forecast verification dataset with trigger values"""
+    # Generate trigger values (binary 0/1)
+    triggers = np.random.random(size=(len(lats), len(lons))) < 0.2
+    triggers = triggers.astype(int)
+    
+    # Create xarray dataset
+    ds = xr.Dataset(
+        data_vars={
+            "trigger": (["lat", "lon"], triggers)
+        },
+        coords={
+            "lat": lats,
+            "lon": lons
+        },
+        attrs={
+            "description": "Forecast verification with trigger values",
+            "trigger_threshold": "Varies by location",
+            "units": "binary (0=no trigger, 1=trigger)"
+        }
+    )
+    
+    return ds
+
+# 11. Historical Disaster Events Dataset
+def create_historical_disasters():
+    """Create historical disaster events dataset with polygons"""
+    num_events = 300
+    start_date = dt.datetime(2015, 5, 10)
+    end_date = dt.datetime(2025, 5, 9)
+    
+    # Disaster types and severity levels
+    disaster_types = ['Flood', 'Drought', 'Landslide', 'Cyclone']
+    severity_levels = ['Minor', 'Moderate', 'Severe', 'Extreme']
+    
+    # Generate random disasters
+    data = []
+    geometries = []
+    
+    for i in range(num_events):
+        # Random date within the 10-year range
+        days = (end_date - start_date).days
+        event_date = start_date + dt.timedelta(days=random.randint(0, days))
+        
+        # Random disaster type and severity
+        disaster_type = random.choice(disaster_types)
+        severity = random.choice(severity_levels)
+        
+        # Generate a random polygon (3-7 points)
+        num_points = random.randint(3, 7)
+        
+        # Random center point
+        center_lat = random.uniform(lat_min, lat_max)
+        center_lon = random.uniform(lon_min, lon_max)
+        
+        # Generate polygon points around the center
+        polygon_points = []
+        radius = 0.2 + random.random() * 0.8  # Random radius between 0.2 and 1.0 degrees
+        
+        for j in range(num_points):
+            angle = (j / num_points) * 2 * np.pi
+            noise = (random.random() - 0.5) * 0.4  # Add noise for irregular shapes
+            r = radius * (1 + noise)
+            
+            lat = center_lat + r * np.sin(angle)
+            lon = center_lon + r * np.cos(angle)
+            
+            # Ensure within boundaries
+            lat = max(lat_min, min(lat_max, lat))
+            lon = max(lon_min, min(lon_max, lon))
+            
+            polygon_points.append((lon, lat))  # GeoJSON format: (lon, lat)
+        
+        # Close the polygon
+        polygon_points.append(polygon_points[0])
+        
+        # Create polygon geometry
+        poly = Polygon(polygon_points)
+        geometries.append(poly)
+        
+        # Generate impact data
+        severity_factor = {'Minor': 1, 'Moderate': 2, 'Severe': 5, 'Extreme': 10}[severity]
+        casualties = random.randint(0, 100) * severity_factor
+        displaced = casualties * (3 + random.randint(0, 7))
+        damage_usd = round(casualties * 10000 * (1 + random.random() * 5)) / 10000
+        
+        data.append({
+            'date': event_date.strftime('%Y-%m-%d'),
+            'disaster_type': disaster_type,
+            'severity': severity,
+            'affected_area_km2': random.randint(50, 550),
+            'casualties': casualties,
+            'displaced': displaced,
+            'damage_million_usd': damage_usd
+        })
+    
+    # Create GeoDataFrame
+    gdf = gpd.GeoDataFrame(data, geometry=geometries, crs="EPSG:4326")
+    
+    return gdf
+
+# Generate all datasets
+def generate_all_datasets():
+    print("Generating East Africa datasets...")
+    
+    # Create datasets
+    extreme_value_ds = create_extreme_value_analysis()
+    ecmwf_ds = create_ecmwf_forecast()
+    gefs_ds = create_gefs_forecast()
+    imerg_ds = create_imerg_observation()
+    rfev2_ds = create_rfev2_observation()
+    geosfm_df = create_geosfm_forecast()
+    population_ds = create_population_density()
+    road_ds = create_road_density()
+    impact_ds = create_impact_model()
+    verification_ds = create_forecast_verification()
+    disasters_gdf = create_historical_disasters()
+    
+    print("\nDatasets generated successfully!")
+    print(f"1. Extreme Value Analysis: {extreme_value_ds.dims}")
+    print(f"2. ECMWF Forecast: {ecmwf_ds.dims}")
+    print(f"3. GEFS Forecast: {gefs_ds.dims}")
+    print(f"4. IMERG Observation: {imerg_ds.dims}")
+    print(f"5. RFEv2 Observation: {rfev2_ds.dims}")
+    print(f"6. GEOSFM Forecast: {geosfm_df.shape}")
+    print(f"7. Population Density: {population_ds.dims}")
+    print(f"8. Road Density: {road_ds.dims}")
+    print(f"9. Impact Model: {impact_ds.dims}")
+    print(f"10. Forecast Verification: {verification_ds.dims}")
+    print(f"11. Historical Disasters: {disasters_gdf.shape}")
+    
+    # Return all datasets in a dictionary
+    return {
+        "extreme_value": extreme_value_ds,
+        "ecmwf": ecmwf_ds,
+        "gefs": gefs_ds,
+        "imerg": imerg_ds,
+        "rfev2": rfev2_ds,
+        "geosfm": geosfm_df,
+        "population": population_ds,
+        "road": road_ds,
+        "impact": impact_ds,
+        "verification": verification_ds,
+        "disasters": disasters_gdf
+    }
+
+# Save datasets example
+def save_datasets(datasets):
+    # Save NetCDF datasets
+    for name, ds in datasets.items():
+        if isinstance(ds, xr.Dataset):
+            ds.to_netcdf(f"data/{name}_dataset.nc")
+        elif isinstance(ds, pd.DataFrame):
+            ds.to_csv(f"data/{name}_dataset.csv", index=False)
+        elif isinstance(ds, gpd.GeoDataFrame):
+            ds.to_file(f"data/{name}_dataset.geojson", driver="GeoJSON")
+
+# Example usage
+if __name__ == "__main__":
+    def main(save=False):
+        datasets = generate_all_datasets()
+
+        if save:
+            save_datasets(datasets)
+
+    main(True)

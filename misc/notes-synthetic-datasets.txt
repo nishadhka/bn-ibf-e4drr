@@ -1,0 +1,32 @@
+historical disasters 1
+
+rain current 6 imerg, 9 rfev2
+
+rain forecast 2 ecmwf, 4 gefs, 5 geosfm
+
+extreme value (rain, 2yr, 5yr, 8yr, 10yr, 20yr) 3
+
+roads 10
+
+population density 8
+
+impact, vulnerability, hazard 7
+
+verification (trigger) 11
+
+I've created a Python script that simulates 11 datasets for East Africa with the specifications you requested. The code defines the region (lat_min:-12, long_min:21, 157×28 grid) and generates:
+
+Extreme value analysis for 2,5,8,10,20 year return periods
+ECMWF forecast (51 members, 3-hourly for 3 days)
+GEFS forecast (30 members, 3-hourly for 3 days)
+IMERG observation (single timestep)
+RFEv2 observation (single timestep)
+GEOSFM forecast (300 random points, 5 days, in DataFrame format)
+Population density (single grid)
+Road density (5km resolution)
+Impact model (hazard, vulnerability, and impact layers)
+Forecast verification (binary trigger values)
+Historical disaster events (300 events over 10 years with random polygons)
+
+The script uses xarray for gridded datasets, pandas DataFrames for tabular data, and GeoPandas for the disaster events with polygon geometries.
+You can run the generate_all_datasets() function to create everything at once, or use individual creation functions as needed.Start your own conversation
