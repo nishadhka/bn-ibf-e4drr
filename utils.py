@@ -34,4 +34,4 @@ if __name__ == "__main__":
         print(id_to_path[num], ":")
         describe_nc_file("data/" + id_to_path[num])
 
-    main(3)
+    main(11)
