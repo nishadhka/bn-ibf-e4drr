@@ -37,3 +37,8 @@ FSM: Flood Severity Model
 NOAA: National Oceanic and Atmospheric Administration
 UTC: Universal Time Coordinated
 EAT: East Africa Time
+odc: observed drought count
+HLP: Harvest/Late Post-harvest
+GS: Growing Season
+RS: Rainy Season
+DS: Dry Season
