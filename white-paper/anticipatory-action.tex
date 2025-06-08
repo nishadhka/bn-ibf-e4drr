@@ -1,0 +1,133 @@
+\documentclass[12pt]{article}
+\input{bayesuvius.sty}
+\begin{document}
+
+
+Below, $\indi()$ 
+will denote the indicator
+or truth function.
+$\indi(S)$ equal 1 if $S$ is true,
+and 0 if $S$ is false.
+For example, $\indi(x\geq 0)$
+equals 0 if $x<0$ and 1 otherwise.
+
+{\bf Standardized Precipitation Index} (SPI) ranges from $-4$ (least rain) to $4$ (most rain).
+
+
+
+$I_D=$ {\bf Impact } (i.e., {\bf severity}) of drought is defined as minus SPI (higher rain,
+higher SPI, less 
+severe drought)
+
+$ P(I_D)=$ likelihood, 
+probability  that a drought of severity $I_D$  will occur in the near future (weeks to months), based on forecasts.
+
+$\mu=$ ensemble member index
+
+$M=$ number of ensemble members, 51 for $ECMWF$ (European Centre for Medium-Range Weather Forecasts)
+
+
+\beqa
+Risk_D &=& E[\rvI_D] = \frac{1}{M} \sum_{\mu=1}^{M} I_{D,\mu}
+\\
+&=&\sum_{I_D} P(I_D) I_D
+\eeqa
+
+A {\bf risk matrix} is
+a  $4\times 4$ matrix
+with $X$ axis 
+equal to impact ($I$)
+and $Y$ axis equal to likelihood
+$P$, with 
+$I$ binned into four values
+and $P(I)$ binned into 4 values.
+The matrix elements equal
+to some arbitrary function 
+$f(I, P)$ defined as risk. Usually, $f(I, P)=IP$ but not necessarily. I find 
+risk matrices arbitrary
+and not very useful. The 
+Wikipedia article on risk matrices (Ref.\cite{wiki-risk-matrix}) agrees.
+
+
+$I_D^*  =$ impact threshold 
+   for drought (e.g., $I_D^* =-SPI=1.5$)
+   
+
+
+
+
+
+\beq
+P(\rvI_D\geq I_D^*  ) = \frac{1}{M} \sum_{\mu=1}^{M} \indi(I_{D,\mu} \geq I_D^*) 
+\eeq
+
+$P^*_D=$ probability threshold for drought
+
+$C_D=$ cost of drought
+
+$L_D=$ loss of drought
+
+\beq
+P^*_D = \frac{C_D}{L_D}
+\eeq
+
+$T_D=$ trigger for drought
+
+
+\beq
+T_D=
+\indi\left[P(\rvI_D\geq I_D^*  ) > P^*_D\right]
+\eeq
+
+Let
+$N^D$ be the number of times (seasons) 
+in which predicted and observed droughts were compared.
+
+ 
+$N^D_{y|x}=$  number of events in which 
+$x\in \bool$ droughts occurred and $y\in \bool$ droughts were predicted
+
+For example, $N^D_{1|0}$ is the number of events 
+in which no drought actually occurred but 
+it was predicted nonetheless (False Alarm)
+
+for clarity, will omit $D$ superscript from $N^D$ below
+
+\beq
+N_{|0} = N_{0|0} + N_{1|0}
+\eeq
+
+\beq
+N_{|1}= N_{0|1} + N_{1|1}
+\eeq
+
+\beq
+N = N_{|0}  + N_{|1}
+\eeq
+
+\beq
+\text{{\bf Hit Rate} (HR)} = P(1|1)
+=\frac{N_{1|1}}{N_{|1}}
+\eeq
+
+\beq
+\text{{\bf False Alarm Rate} (FAR)} = P(1|0)
+=\frac{N_{1|0}}{N_{|0}}
+\eeq
+
+\beq
+\text{{\bf Miss Rate} (MR)} = P(0|1)
+=\frac{N_{0|1}}{N_{|1}}
+\eeq
+
+\beq
+\text{{\bf Specificity}} = P(0|0)
+=\frac{N_{0|0}}{N_{|0}}
+\eeq
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{aa_references}
+\end{document}
