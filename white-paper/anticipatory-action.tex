@@ -2,14 +2,30 @@
 \input{bayesuvius.sty}
 \begin{document}
 
-
-Below, $\indi()$ 
-will denote the indicator
-or truth function.
-$\indi(S)$ equal 1 if $S$ is true,
+\section{Introduction}
+\section{Notation}
+We will use $\indi()$ 
+to denote the indicator
+function
+( a.k.a. the truth function).
+$\indi(S)$ equals 1 if $S$ is true,
 and 0 if $S$ is false.
 For example, $\indi(x\geq 0)$
 equals 0 if $x<0$ and 1 otherwise.
+
+In this paper, random variables will
+be indicated by underlining.
+For example, $P(\rvx>x)$
+will denote
+the probability 
+that the random 
+variable $\rvx$
+is greater than $x$.
+
+bnet will be used as 
+an abbreviation of Bayesian network.
+
+\section{Drought AA bnet}
 
 {\bf Standardized Precipitation Index} (SPI) ranges from $-4$ (least rain) to $4$ (most rain).
 
@@ -53,10 +69,6 @@ $I_D^*  =$ impact threshold
    for drought (e.g., $I_D^* =-SPI=1.5$)
    
 
-
-
-
-
 \beq
 P(\rvI_D\geq I_D^*  ) = \frac{1}{M} \sum_{\mu=1}^{M} \indi(I_{D,\mu} \geq I_D^*) 
 \eeq
@@ -91,13 +103,20 @@ For example, $N^D_{1|0}$ is the number of events
 in which no drought actually occurred but 
 it was predicted nonetheless (False Alarm)
 
-for clarity, will omit $D$ superscript from $N^D$ below
+For clarity, will omit $D$ superscript from $N^D$ below.
+
+
+$N_{0|0}=$ {\bf True Negatives} (TN)
+
+$N_{1|1}=$ {\bf True Positives} (TP)
+
+$N_{0|1}=$ {\bf False Positives} (FP)
+
+$N_{1|0}=$ {\bf False Negatives} (FN)
 
 \beq
 N_{|0} = N_{0|0} + N_{1|0}
-\eeq
-
-\beq
+,\quad
 N_{|1}= N_{0|1} + N_{1|1}
 \eeq
 
@@ -106,12 +125,54 @@ N = N_{|0}  + N_{|1}
 \eeq
 
 \beq
-\text{{\bf Hit Rate} (HR)} = P(1|1)
+P(1|1)
+=\frac{N_{1|1}}{N_{|1}},
+\quad
+P(1|0)
+=\frac{N_{1|0}}{N_{|0}},
+\quad
+ P(0|1)
+=\frac{N_{0|1}}{N_{|1}},
+\quad
+P(0|0)
+=\frac{N_{0|0}}{N_{|0}}
+\eeq
+
+\begin{figure}[h!]
+$$
+\xymatrix{
+&\rvX_1, \rvX_2, \ldots\ar[d]
+\\
+P(\rvI_D> I^*_D)\ar[d] 
+& P^*_D= C_D/L_D\ar[dl]
+\\
+\rvT_D\ar[r]
+& \rvT_D^{pred}
+}
+$$
+\caption{AA bnet}
+\label{fig-aa-bnet}
+\end{figure}
+
+$\rvX_1, \rvX_2, \ldots$ represents local road density, population density,
+historical events
+
+\appendix 
+
+\section{Appendix: Functions of $N_{y|x}$}
+\beq
+\text{{\bf Hit Rate} (HR)}\footnote{HR is sometimes called {Precision}} = P(1|1)
 =\frac{N_{1|1}}{N_{|1}}
 \eeq
 
 \beq
-\text{{\bf False Alarm Rate} (FAR)} = P(1|0)
+\text{{\bf False Alarm Rate} (FA Rate)}\footnote{
+Meteorologists also use
+an FA Ratio instead of FA Rate.
+{\bf FA Ratio}$ =
+\frac{N_{1|0}}{N_{1|0} + N_{1|1}}\leq 1$
+}
+ = P(1|0)
 =\frac{N_{1|0}}{N_{|0}}
 \eeq
 
@@ -121,9 +182,11 @@ N = N_{|0}  + N_{|1}
 \eeq
 
 \beq
-\text{{\bf Specificity}} = P(0|0)
+\text{{\bf Correct Negatives} (CN)}\footnote{CN is sometimes called the {\bf Specificity}} = P(0|0)
 =\frac{N_{0|0}}{N_{|0}}
 \eeq
+
+
 
 
 
