@@ -3,6 +3,14 @@
 \begin{document}
 
 \section{Introduction}
+
+{\bf Drought Anticipatory Action} (DAA)
+
+bnet (Bayesian network)
+
+{\bf Standardized Precipitation Index} (SPI) ranges from $-4$ (least rain) to $4$ (most rain).
+
+
 \section{Notation}
 We will use $\indi()$ 
 to denote the indicator
@@ -22,88 +30,20 @@ that the random
 variable $\rvx$
 is greater than $x$.
 
-bnet will be used as 
-an abbreviation of Bayesian network.
-
-\section{Drought AA bnet}
-
-{\bf Standardized Precipitation Index} (SPI) ranges from $-4$ (least rain) to $4$ (most rain).
-
-
-
-$I_D=$ {\bf Impact } (i.e., {\bf severity}) of drought is defined as minus SPI (higher rain,
-higher SPI, less 
-severe drought)
-
-$ P(I_D)=$ likelihood, 
-probability  that a drought of severity $I_D$  will occur in the near future (weeks to months), based on forecasts.
-
-$\mu=$ ensemble member index
-
-$M=$ number of ensemble members, 51 for $ECMWF$ (European Centre for Medium-Range Weather Forecasts)
-
-
-\beqa
-Risk_D &=& E[\rvI_D] = \frac{1}{M} \sum_{\mu=1}^{M} I_{D,\mu}
-\\
-&=&\sum_{I_D} P(I_D) I_D
-\eeqa
-
-A {\bf risk matrix} is
-a  $4\times 4$ matrix
-with $X$ axis 
-equal to impact ($I$)
-and $Y$ axis equal to likelihood
-$P$, with 
-$I$ binned into four values
-and $P(I)$ binned into 4 values.
-The matrix elements equal
-to some arbitrary function 
-$f(I, P)$ defined as risk. Usually, $f(I, P)=IP$ but not necessarily. I find 
-risk matrices arbitrary
-and not very useful. The 
-Wikipedia article on risk matrices (Ref.\cite{wiki-risk-matrix}) agrees.
-
-
-$I_D^*  =$ impact threshold 
-   for drought (e.g., $I_D^* =-SPI=1.5$)
-   
-
-\beq
-P(\rvI_D\geq I_D^*  ) = \frac{1}{M} \sum_{\mu=1}^{M} \indi(I_{D,\mu} \geq I_D^*) 
-\eeq
-
-$P^*_D=$ probability threshold for drought
-
-$C_D=$ cost of drought
-
-$L_D=$ loss of drought
-
-\beq
-P^*_D = \frac{C_D}{L_D}
-\eeq
-
-$T_D=$ trigger for drought
-
-
-\beq
-T_D=
-\indi\left[P(\rvI_D\geq I_D^*  ) > P^*_D\right]
-\eeq
 
 Let
-$N^D$ be the number of times (seasons) 
+
+$N=$ be the number of times (seasons) 
 in which predicted and observed droughts were compared.
 
- 
-$N^D_{y|x}=$  number of events in which 
+$N_{y|x}=$  number of events in which 
 $x\in \bool$ droughts occurred and $y\in \bool$ droughts were predicted
-
-For example, $N^D_{1|0}$ is the number of events 
+For example, $N_{1|0}$ is the number of events 
 in which no drought actually occurred but 
 it was predicted nonetheless (False Alarm)
 
-For clarity, will omit $D$ superscript from $N^D$ below.
+
+
 
 
 $N_{0|0}=$ {\bf True Negatives} (TN)
@@ -138,24 +78,156 @@ P(0|0)
 =\frac{N_{0|0}}{N_{|0}}
 \eeq
 
+\section{DAA bnet}
+
+
+
+$\kappa=(\sigma, \delta)$ is
+the drought kind, 
+where  $\sigma\in\{\text{MAM, JJAS}\}$\footnote{Letters here stand for months of the year} is the season, and $\delta\in\{\text{Moderate, Extreme, Severe}\}$
+is the drought degree.
+
+$I_\kappa=$ {\bf Impact } (i.e., {\bf severity}) of drought is defined as minus SPI (higher rain,
+higher SPI, less 
+severe drought)
+
+$ P(I_\kappa)=$ likelihood, 
+probability  that a drought of severity $I_\kappa$  will occur in the near future (weeks to months), based on forecasts.
+
+$\mu=$ ensemble member index
+
+$M=$ number of ensemble members, 51 for $ECMWF$ (European Centre for Medium-Range Weather Forecasts)
+
+
+\beqa
+Risk_\kappa &=& E[\rvI_\kappa] = \frac{1}{M} \sum_{\mu=1}^{M} I_{\kappa,\mu}
+\\
+&=&\sum_{I_\kappa} P(I_\kappa) I_\kappa
+\eeqa
+
+A {\bf risk matrix} is
+a  $4\times 4$ matrix
+with $X$ axis 
+equal to impact ($I$)
+and $Y$ axis equal to likelihood
+$P$, with 
+$I$ binned into four values
+and $P(I)$ binned into 4 values.
+The matrix elements equal
+to some arbitrary function 
+$f(I, P)$ defined as risk. Usually, $f(I, P)=IP$ but not necessarily. I find 
+risk matrices arbitrary
+and not very useful. The 
+Wikipedia article on risk matrices (Ref.\cite{wiki-risk-matrix}) agrees.
+
+\begin{table}[!h]
+\begin{tabular}{|l|l|l|l|}
+\hline
+$\sigma\backslash\delta$ & \cellcolor[HTML]{FFFFC7}Moderate & \cellcolor[HTML]{FFFFC7}Extreme & \cellcolor[HTML]{FFFFC7}Severe \\ \hline
+\cellcolor[HTML]{FFFFC7}MAM & -0.55 & -0.98 & -0.99 \\ \hline
+\cellcolor[HTML]{FFFFC7}JJAS & -0.41 & -0.98 & -0.99 \\ \hline
+\end{tabular}
+\caption{SPI threshold  for Karamoja, Uganda.
+Cells give $-I^*_\kappa$,
+where $\kappa=(\sigma, \delta)$}
+\label{tab-spi-karamoja}
+\end{table}
+
+$I_\kappa^*  =$ impact threshold 
+   for drought (
+   See Table
+   \ref{tab-spi-karamoja}
+   for examples
+   of $I^*_\kappa$. )
+   
+
+\beq
+P(\rvI_\kappa\geq I_\kappa^*  ) = \frac{1}{M} \sum_{\mu=1}^{M} \indi(I_{\kappa,\mu} \geq I_\kappa^*) 
+\eeq
+
+$P^*_\kappa=$ probability threshold for drought
+
+$C_\kappa=$ cost of drought
+
+$L_\kappa=$ loss of drought
+
+\beq
+P^*_\kappa = \frac{C_\kappa}{L_\kappa}
+\eeq
+
+$T_\kappa=$ trigger for drought
+
+
+\beq
+T_\kappa=
+\indi\left[P(\rvI_\kappa\geq I_\kappa^*  ) > P^*_\kappa\right]
+\eeq
+
+
+
 \begin{figure}[h!]
 $$
 \xymatrix{
-&\rvX_1, \rvX_2, \ldots\ar[d]
+\rvX_1 \ar[dr]
+&\rvX_2 \ar[d]
+&\rvX_3\ar[dl]
 \\
-P(\rvI_D> I^*_D)\ar[d] 
-& P^*_D= C_D/L_D\ar[dl]
+P(\rvI_\kappa> I^*_\kappa)\ar[d] 
+& \rvP^*_\kappa= C_\kappa/L_\kappa\ar[dl]
 \\
-\rvT_D\ar[r]
-& \rvT_D^{pred}
+\rvT_\kappa
+\ar[d]\ar[dr]\ar[drr]
+\\
+\ul{FAR}_\kappa 
+&\ul{HR}_\kappa
+&\ul{AUROC}_\kappa
 }
 $$
-\caption{AA bnet}
+\caption{DAA bnet.
+We use one of these 
+bnets for each 
+$\kappa$ value and for each grid cell
+of 0.25 degrees in latitude by 0.25 degrees 
+in longitude. 1 degree in latitude
+or longitude is approximately 100 km.
+}
 \label{fig-aa-bnet}
 \end{figure}
 
-$\rvX_1, \rvX_2, \ldots$ represents local road density, population density,
-historical events
+Let $\rvX_1, \rvX_2, \ldots$ represent local road density, population density,
+historical 
+catastrophic events, etc.
+
+The TPMs\footnote{TPM=Transition
+Probability Matrix.
+This is the same thing
+as CPT=Conditional Probability Table
+} printed in blue, for the
+bnet Fig.\ref{fig-aa-bnet}, are
+as follows.
+
+\beq\color{blue}
+P^*_\kappa=
+f_\kappa(X_1, X_2, X_3)
+\eeq
+where $f_\kappa()$
+is some deterministic
+function to be decided
+
+\beq\color{blue}
+T_\kappa
+=
+\indi[
+P(\rvI_\kappa>I^*_\kappa) >P^*_\kappa]
+\eeq
+
+\beq\color{blue}
+P(Y_\kappa|T_\kappa)
+= \text{to be learned empirically from dataset}
+\eeq
+where $Y_\kappa=
+FAR_\kappa, HR_\kappa,
+AUROC_\kappa$.
 
 \appendix 
 
