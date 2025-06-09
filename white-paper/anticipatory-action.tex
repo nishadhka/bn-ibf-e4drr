@@ -6,22 +6,23 @@
 
 {\bf Drought Anticipatory Action} (DAA)
 
-bnet (Bayesian network)
+bnet (Bayesian network) (see Ref.\cite{Bayesuvius})
 
 {\bf Standardized Precipitation Index} (SPI) ranges from $-4$ (least rain) to $4$ (most rain).
 
 
-\section{Notation}
+\section{Notation
+and Conventions}
 We will use $\indi()$ 
 to denote the indicator
 function
-( a.k.a. the truth function).
+(a.k.a. the truth function).
 $\indi(S)$ equals 1 if $S$ is true,
 and 0 if $S$ is false.
 For example, $\indi(x\geq 0)$
 equals 0 if $x<0$ and 1 otherwise.
 
-In this paper, random variables will
+In this article, random variables will
 be indicated by underlining.
 For example, $P(\rvx>x)$
 will denote
@@ -33,50 +34,73 @@ is greater than $x$.
 
 Let
 
-$N=$ be the number of times (seasons) 
+$N=$ the number of times (seasons) 
 in which predicted and observed droughts were compared.
 
-$N_{y|x}=$  number of events in which 
-$x\in \bool$ droughts occurred and $y\in \bool$ droughts were predicted
+$N_{x|a}=$  number of events in which a number of 
+$a\in \bool$ droughts occurred and 
+a number of $x\in \bool$ droughts were predicted.
 For example, $N_{1|0}$ is the number of events 
 in which no drought actually occurred but 
 it was predicted nonetheless (False Alarm)
 
 
+$N_{0|0}=$ {\bf True Negatives} (TN), correct rejection
+
+$N_{1|1}=$ {\bf True Positives} (TP), hit
+
+$N_{0|1}=$ {\bf False Positives} (FP), miss, type II error or underestimation
+
+$N_{1|0}=$ {\bf False Negatives} (FN), false alarm, type I error or overestimation
 
 
-
-$N_{0|0}=$ {\bf True Negatives} (TN)
-
-$N_{1|1}=$ {\bf True Positives} (TP)
-
-$N_{0|1}=$ {\bf False Positives} (FP)
-
-$N_{1|0}=$ {\bf False Negatives} (FN)
 
 \beq
-N_{|0} = N_{0|0} + N_{1|0}
-,\quad
-N_{|1}= N_{0|1} + N_{1|1}
+N_{|a} = \sum_{x'} N_{x'|a},
+\quad
+N_{x|} = \sum_{a'} N_{x|a'}
 \eeq
 
 \beq
-N = N_{|0}  + N_{|1}
+N = \sum_x \sum_a N_{x|a} =
+\sum_a N_{|a}
+=\sum_x N_{x|a}
 \eeq
 
 \beq
-P(1|1)
-=\frac{N_{1|1}}{N_{|1}},
-\quad
-P(1|0)
-=\frac{N_{1|0}}{N_{|0}},
-\quad
- P(0|1)
-=\frac{N_{0|1}}{N_{|1}},
-\quad
-P(0|0)
-=\frac{N_{0|0}}{N_{|0}}
+R(x|a) = R_{x|a}= \frac{N_{x|a}}{N_{|a}}
+,\;
+R'(a|x) = R'_{a|x}= \frac{N_{x|a}}{N_{x|}}
 \eeq
+
+\beq
+\sum_x R(x|a) =
+\sum_a R'(a|x)=1
+\eeq
+so both 
+$R(x|a)$
+and $R'(a|x)$ 
+are
+conditional
+probability distributions.
+
+Note that $N_{x|a}$
+for $x,a\in \bool$
+are 4 degrees of
+freedom (dofs).
+Instead of those 4  dofs,
+we will use $N$
+and 3 others dofs,
+namely,
+hit rate (HR), 
+false alarm rate (FAR)
+and area under ROC curve (AUROC or just AUR).
+HR, FAR and AUROC
+are defined
+in Appendix \ref{app-n-ratios}
+
+
+
 
 \section{DAA bnet}
 
@@ -229,39 +253,111 @@ where $Y_\kappa=
 FAR_\kappa, HR_\kappa,
 AUROC_\kappa$.
 
+
+
 \appendix 
 
-\section{Appendix: Functions of $N_{y|x}$}
-\beq
-\text{{\bf Hit Rate} (HR)}\footnote{HR is sometimes called {Precision}} = P(1|1)
-=\frac{N_{1|1}}{N_{|1}}
+\section{Appendix: Functions of $N_{x|a}$}
+\label{app-n-ratios}
+
+Terminology Table
+Adapted from Wikipedia Ref.\cite{wiki-roc}
+
+positive events (P):
+$N_{|1}=\sum_x N_{x|1}$,
+the number of real positive actual
+events in the data
+
+negative events (N):
+$N_{|0}=\sum_x N_{x|0}$,
+the number of real negative cases in the data
+
+
+sensitivity, recall,  or true positive rate (TPR),
+or hit rate  ({\color{red}HR}):
+\beq TPR=
+{  {R_{1|1}} ={\frac { {N_{1|1}} }{ {N_{|1}} }}=
+{\frac { {N_{1|1}} }{ {N_{1|1}} + {N_{0|1}} }}=1- {R_{0|1}} }
 \eeq
 
-\beq
-\text{{\bf False Alarm Rate} (FA Rate)}\footnote{
-Meteorologists also use
-an FA Ratio instead of FA Rate.
-{\bf FA Ratio}$ =
-\frac{N_{1|0}}{N_{1|0} + N_{1|1}}\leq 1$
-}
- = P(1|0)
-=\frac{N_{1|0}}{N_{|0}}
+specificity, selectivity or true negative rate (TNR):
+\beq TNR=
+{  {R_{0|0}} ={\frac { {N_{0|0}} }{ {N_{|0}} }}
+={\frac { {N_{0|0}} }{ {N_{0|0}} + {N_{1|0}} }}=
+1- {R_{1|0}} }
 \eeq
 
-\beq
-\text{{\bf Miss Rate} (MR)} = P(0|1)
-=\frac{N_{0|1}}{N_{|1}}
+precision or positive predictive value (PPV):
+\beq 
+{  {PPV} ={\frac { {N_{1|1}} }
+{ {N_{1|1}} + {N_{1|0}} }}=1- {FDR} }
 \eeq
 
-\beq
-\text{{\bf Correct Negatives} (CN)}\footnote{CN is sometimes called the {\bf Specificity}} = P(0|0)
-=\frac{N_{0|0}}{N_{|0}}
+negative predictive value (NPV):
+\beq 
+{  {NPV} ={\frac { {N_{0|0}} }
+{ {N_{0|0}} + {N_{0|1}} }}=1- {FOR} }
+\eeq
+
+miss rate or false negative rate (FNR):
+\beq FNR=
+{  {R_{0|1}} ={\frac { {N_{0|1}} }
+{ {N_{|1}} }}={\frac { {N_{0|1}} }{ {N_{0|1}} 
++ {N_{1|1}} }}=1- {R_{1|1}} }
+\eeq
+
+fall-out or false positive rate (FPR),
+false alarm rate ({\color{red}FAR}):
+\beq FPR=
+{  {R_{1|0}} ={\frac { {N_{1|0}} }
+{ {N_{|0}} }}={\frac { {N_{1|0}} }
+{ {N_{1|0}} + {N_{0|0}} }}=1- {R_{0|0}} }
+\eeq
+
+false discovery rate (FDR):
+\beq 
+{  {FDR} ={\frac { {N_{1|0}} }
+{ {N_{1|0}} + {N_{1|1}} }}=1- {PPV} }
+\eeq
+
+false omission rate (FOR):
+\beq 
+{  {FOR} ={\frac { {N_{0|1}} }
+{ {N_{0|1}} + {N_{0|0}} }}=1- {NPV} }
 \eeq
 
 
+accuracy (ACC):
+\beq 
+{  {ACC} ={\frac { {N_{1|1}} + {N_{0|0}} }
+{ {N_{|1}} + {N_{|0}} }}={\frac { {N_{1|1}} + {N_{0|0}} }
+{ {N_{1|1}} + {N_{0|0}} + {N_{1|0}} + {N_{0|1}}
+ }}}
+\eeq
 
+balanced accuracy (BA):
+\beq 
+{  {BA} ={\frac {R_{1|1}+R_{0|0}}{2}}}
+\eeq
 
+F1 score
+is the harmonic mean of precision and sensitivity: 
+\beq 
+{  {F}_{1}=2\times {\frac { {PPV} 
+\times  {R_{1|1}} }{ {PPV} + {R_{1|1}} }}=
+{\frac {2 {N_{1|1}} }{2 {N_{1|1}} + {N_{1|0}} +
+ {N_{0|1}} }}}
+\eeq
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=2in]
+{roc-auc.png}
+\caption{Example of ROC.
+Green shaded
+ area is the AUC of the ROC.} 
+\label{fig-roc-auc}
+\end{figure}
 
 \bibliographystyle{plain}
 \bibliography{aa_references}
