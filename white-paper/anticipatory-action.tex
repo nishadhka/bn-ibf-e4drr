@@ -10,6 +10,15 @@ bnet (Bayesian network) (see Ref.\cite{Bayesuvius})
 
 {\bf Standardized Precipitation Index} (SPI) ranges from $-4$ (least rain) to $4$ (most rain).
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=6in]
+{tim-palmer-cartoon.png}
+\caption{Illustration
+from Tim Palmer's book Ref.\cite{palmer-book}}
+\label{fig-tim-palmer-cartoon}
+\end{figure}
+
 
 \section{Notation
 and Conventions}
@@ -265,7 +274,7 @@ AUROC_\kappa$.
 
 Enter bnet Fig.\ref{fig-aa-bnet} into bnet software
 such as PyAgrum
-(Ref.\cite{pyagrum}.
+(Ref.\cite{pyagrum}).
 Enter into software available
 evidence for
 nodes $X_1, X_2, X_3$
@@ -378,10 +387,21 @@ is the harmonic mean of precision and sensitivity:
  {N_{0|1}} }}}
 \eeq
 
-The area under the ROC curve,
+The area under the ROC (Receiver
+Operating Characteristic) curve,
 known as AUC or {\color{red}AUROC},
 is defined by 
-Fig.\ref{fig-roc-auc}.
+Fig.\ref{fig-roc-auc}. One set of 4
+values 
+$N_{x|a}$
+where $a,x\in \bool$,
+only gives one
+point of the ROC curve. To
+get a full ROC curve,
+we need to vary a parameter. In the
+case of DAA,
+we vary geographical locations,
+for example.
 
 \begin{figure}[h!]
 \centering
