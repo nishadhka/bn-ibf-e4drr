@@ -202,9 +202,9 @@ T_\kappa=
 \begin{figure}[h!]
 $$
 \xymatrix{
-\rvX_1 \ar[dr]
-&\rvX_2 \ar[d]
-&\rvX_3\ar[dl]
+\rvX^1 \ar[dr]
+&\rvX^2 \ar[d]
+&\rvX^3\ar[dl]
 \\
 P(\rvI_\kappa> I^*_\kappa)\ar[d] 
 & \rvP^*_\kappa= C_\kappa/L_\kappa\ar[dl]
@@ -228,7 +228,7 @@ or longitude is approximately 100 km.
 \label{fig-aa-bnet}
 \end{figure}
 
-Let $\rvX_1, \rvX_2, \ldots$ represent local road density, population density,
+Let $\rvX^1, \rvX^2, \ldots$ represent local road density, population density,
 historical 
 catastrophic events, etc.
 
@@ -248,7 +248,7 @@ $\delta(a,b)=\indi(a,b)$ is the Kronecker delta function. }
 
 \beq\color{blue}
 P^*_\kappa=
-f_\kappa(X_1, X_2, X_3)
+f_\kappa(X^1, X^2, X^3)
 \eeq
 where $f_\kappa()$
 is some deterministic
@@ -262,12 +262,12 @@ P(\rvI_\kappa>I^*_\kappa) >P^*_\kappa]
 \eeq
 
 \beq\color{blue}
-P(Y_\kappa|T_\kappa)
+P(Y_\kappa^i|T_\kappa)
 = \text{to be learned empirically from dataset}
 \eeq
-where $Y_\kappa=
-FAR_\kappa, HR_\kappa,
-AUROC_\kappa$.
+where $(Y_\kappa^1, Y_\kappa^2, Y_\kappa^3) =
+(FAR_\kappa, HR_\kappa,
+AUROC_\kappa)$.
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=blue!10]
 \noindent {\bf Algorithm for finding best triggers $T^*_\kappa$:}
@@ -277,8 +277,8 @@ such as PyAgrum
 (Ref.\cite{pyagrum}).
 Enter into software available
 evidence for
-nodes $X_1, X_2, X_3$
-and $Y_\kappa$.
+nodes $P(\rvI_\kappa> I^*_\kappa)$, $(X^1, X^2, X^3)$
+and $(Y_\kappa^1, Y_\kappa^2,Y_\kappa^3)$.
 Allow software
 to
 infer the 
@@ -400,7 +400,7 @@ point of the ROC curve. To
 get a full ROC curve,
 we need to vary a parameter. In the
 case of DAA,
-we vary geographical locations,
+we vary geographical location,
 for example.
 
 \begin{figure}[h!]
