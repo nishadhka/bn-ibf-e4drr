@@ -13,11 +13,11 @@ bnet (Bayesian network) (see Ref.\cite{Bayesuvius})
 
 \section{Notation
 and Conventions}
-We will use $\indi()$ 
+We will use $\indi(S)$ 
 to denote the indicator
 function
 (a.k.a. the truth function).
-$\indi(S)$ equals 1 if $S$ is true,
+$\indi(S)$ equals 1 if statement $S$ is true,
 and 0 if $S$ is false.
 For example, $\indi(x\geq 0)$
 equals 0 if $x<0$ and 1 otherwise.
@@ -42,7 +42,7 @@ $a\in \bool$ droughts occurred and
 a number of $x\in \bool$ droughts were predicted.
 For example, $N_{1|0}$ is the number of events 
 in which no drought actually occurred but 
-it was predicted nonetheless (False Alarm)
+it was predicted nonetheless (False Alarm).
 
 
 $N_{0|0}=$ {\bf True Negatives} (TN), correct rejection
@@ -68,25 +68,25 @@ N = \sum_x \sum_a N_{x|a} =
 \eeq
 
 \beq
-R(x|a) = R_{x|a}= \frac{N_{x|a}}{N_{|a}}
+P(x|a) = R_{x|a}= \frac{N_{x|a}}{N_{|a}}
 ,\;
-R'(a|x) = R'_{a|x}= \frac{N_{x|a}}{N_{x|}}
+P'(a|x) = R'_{a|x}= \frac{N_{x|a}}{N_{x|}}
 \eeq
 
 \beq
-\sum_x R(x|a) =
-\sum_a R'(a|x)=1
+\sum_x P(x|a) =
+\sum_a P'(a|x)=1
 \eeq
-so both 
-$R(x|a)$
-and $R'(a|x)$ 
+Note that both 
+$P(x|a)$
+and $P'(a|x)$ 
 are
 conditional
 probability distributions.
 
 Note that $N_{x|a}$
 for $x,a\in \bool$
-are 4 degrees of
+yields 4 degrees of
 freedom (dofs).
 Instead of those 4  dofs,
 we will use $N$
@@ -94,7 +94,7 @@ and 3 others dofs,
 namely,
 hit rate (HR), 
 false alarm rate (FAR)
-and area under ROC curve (AUROC or just AUR).
+and area under ROC curve (AUROC).
 HR, FAR and AUROC
 are defined
 in Appendix \ref{app-n-ratios}
@@ -105,10 +105,11 @@ in Appendix \ref{app-n-ratios}
 \section{DAA bnet}
 
 
+Let
 
-$\kappa=(\sigma, \delta)$ is
+$\kappa=(\sigma, \delta)=$
 the drought kind, 
-where  $\sigma\in\{\text{MAM, JJAS}\}$\footnote{Letters here stand for months of the year} is the season, and $\delta\in\{\text{Moderate, Extreme, Severe}\}$
+where  $\sigma\in\{\text{MAM, JJAS}\}$\footnote{Letters here stand for the first letter of the months of the year.} is the season, and $\delta\in\{\text{Moderate, Extreme, Severe}\}$
 is the drought degree.
 
 $I_\kappa=$ {\bf Impact } (i.e., {\bf severity}) of drought is defined as minus SPI (higher rain,
@@ -136,9 +137,10 @@ equal to impact ($I$)
 and $Y$ axis equal to likelihood
 $P$, with 
 $I$ binned into four values
-and $P(I)$ binned into 4 values.
-The matrix elements equal
-to some arbitrary function 
+and $P$ binned into 4 values.
+The matrix elements give
+the value of
+some arbitrary function 
 $f(I, P)$ defined as risk. Usually, $f(I, P)=IP$ but not necessarily. I find 
 risk matrices arbitrary
 and not very useful. The 
@@ -158,11 +160,10 @@ where $\kappa=(\sigma, \delta)$}
 \end{table}
 
 $I_\kappa^*  =$ impact threshold 
-   for drought (
-   See Table
+   for drought (See Table
    \ref{tab-spi-karamoja}
    for examples
-   of $I^*_\kappa$. )
+   of $I^*_\kappa$.)
    
 
 \beq
@@ -228,7 +229,13 @@ This is the same thing
 as CPT=Conditional Probability Table
 } printed in blue, for the
 bnet Fig.\ref{fig-aa-bnet}, are
-as follows.
+as follows.\footnote{
+A deterministic node satisfying
+the structural equation $y=f(x_1, x_2)$,
+has the TPM: $P(y|x_1, x_2)=
+\delta(y, f(x_1, x_2))
+$, where 
+$\delta(a,b)=\indi(a,b)$ is the Kronecker delta function. }
 
 \beq\color{blue}
 P^*_\kappa=
@@ -253,6 +260,28 @@ where $Y_\kappa=
 FAR_\kappa, HR_\kappa,
 AUROC_\kappa$.
 
+\begin{mdframed}[hidealllines=true,backgroundcolor=blue!10]
+\noindent {\bf Algorithm for finding best triggers $T^*_\kappa$:}
+
+Enter bnet Fig.\ref{fig-aa-bnet} into bnet software
+such as PyAgrum
+(Ref.\cite{pyagrum}.
+Enter into software available
+evidence for
+nodes $X_1, X_2, X_3$
+and $Y_\kappa$.
+Allow software
+to
+infer the 
+distribution of 
+$\rvT^*_\kappa\in\bool$.
+Choose for
+$T^*_\kappa$
+the state
+with maximum 
+probability. 
+\end{mdframed}
+
 
 
 \appendix 
@@ -265,15 +294,15 @@ Adapted from Wikipedia Ref.\cite{wiki-roc}
 
 positive events (P):
 $N_{|1}=\sum_x N_{x|1}$,
-the number of real positive actual
+the number of real positive 
 events in the data
 
 negative events (N):
 $N_{|0}=\sum_x N_{x|0}$,
-the number of real negative cases in the data
+the number of real negative events in the data
 
 
-sensitivity, recall,  or true positive rate (TPR),
+sensitivity, recall, true positive rate (TPR),
 or hit rate  ({\color{red}HR}):
 \beq TPR=
 {  {R_{1|1}} ={\frac { {N_{1|1}} }{ {N_{|1}} }}=
@@ -306,8 +335,8 @@ miss rate or false negative rate (FNR):
 + {N_{1|1}} }}=1- {R_{1|1}} }
 \eeq
 
-fall-out or false positive rate (FPR),
-false alarm rate ({\color{red}FAR}):
+fall-out, false positive rate (FPR),
+or false alarm rate ({\color{red}FAR}):
 \beq FPR=
 {  {R_{1|0}} ={\frac { {N_{1|0}} }
 { {N_{|0}} }}={\frac { {N_{1|0}} }
@@ -348,6 +377,11 @@ is the harmonic mean of precision and sensitivity:
 {\frac {2 {N_{1|1}} }{2 {N_{1|1}} + {N_{1|0}} +
  {N_{0|1}} }}}
 \eeq
+
+The area under the ROC curve,
+known as AUC or {\color{red}AUROC},
+is defined by 
+Fig.\ref{fig-roc-auc}.
 
 \begin{figure}[h!]
 \centering
