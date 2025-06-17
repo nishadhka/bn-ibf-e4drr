@@ -1,5 +1,5 @@
 import numpy as np
-from pandas import crosstab
+import pandas as pd
 
 
 def learn_cpt_from_df(bn, df, name):
@@ -24,7 +24,7 @@ def learn_cpt_from_df(bn, df, name):
     parents.pop()  # this removes last element
 
     if (len(parents) > 0):
-        c = crosstab(df[name], [df[parent] for parent in parents])
+        c = pd.crosstab(df[name], [df[parent] for parent in parents])
         s = c / c.sum().apply(np.float32)
     else:
         s = df[name].value_counts(normalize=True)

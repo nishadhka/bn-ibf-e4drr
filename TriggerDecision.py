@@ -11,10 +11,10 @@ class TriggerDecision:
         shape = (self.num_p_bins**2, 2)
         ar = np.zeros(shape)
         row = 0
-        for tail_prob_bin, prob8_bin in\
+        for tail_prob_bin, prob3_bin in\
             product(self.num_p_bins, self.num_p_bins):
             for trigger in [0, 1]:
-                if tail_prob_bin > prob8_bin:
+                if tail_prob_bin > prob3_bin:
                     ar[row, trigger] = 1
                     break
             row += 1
