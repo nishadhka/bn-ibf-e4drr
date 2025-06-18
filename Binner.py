@@ -2,8 +2,27 @@ import numpy as np
 
 
 class Binner:
+    """
+
+    Attributes
+    ----------
+    delta_x: float
+    levels: list[float]
+    num_bins: int
+    xmax: float
+    xmin: float
+
+    """
 
     def __init__(self, num_bins, xmin=0, xmax=1):
+        """
+
+        Parameters
+        ----------
+        num_bins: int
+        xmin: float
+        xmax: float
+        """
         self.num_bins = num_bins
         assert xmax > xmin
         self.xmin = xmin
@@ -15,6 +34,17 @@ class Binner:
         # print("levels=", self.levels)
 
     def get_xbin(self, x):
+        """
+
+        Parameters
+        ----------
+        x: float
+
+        Returns
+        -------
+        int
+
+        """
         xbin = self.num_bins
         for i, level in enumerate(self.levels):
             # print("ngrr", x, level)
@@ -27,12 +57,45 @@ class Binner:
         return xbin
 
     def get_xbins(self, xs):
+        """
+
+        Parameters
+        ----------
+        xs: list[float]
+
+        Returns
+        -------
+        list[int]
+
+        """
         return [self.get_xbin(x) for x in xs]
 
     def get_x(self, xbin):
+        """
+
+        Parameters
+        ----------
+        xbin: int
+
+        Returns
+        -------
+        float
+
+        """
         return xbin * self.delta_x
 
     def get_xs(self, xbins):
+        """
+
+        Parameters
+        ----------
+        xbins: list[int]
+
+        Returns
+        -------
+        list[float]
+
+        """
         return [xbin * self.delta_x for xbin in xbins]
 
 

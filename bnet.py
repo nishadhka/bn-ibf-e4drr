@@ -2,7 +2,7 @@ import pyagrum as gum
 from globals import *
 import pandas as pd
 from  cpt_from_df import *
-from Prob3 import *
+from ProbBound import *
 from TriggerDecision import *
 
 
@@ -14,8 +14,8 @@ def build_bnet(csv_file,
         bn.add(gum.IntegerVariable(f'X{i +}',
                                    f'X{i + 1}',
                                    2))
-    bn.add(gum.IntegerVariable('Prob3',
-                               'Prob3',
+    bn.add(gum.IntegerVariable('ProbBound',
+                               'ProbBound',
                                NUM_P_BINS))
     bn.add(gum.IntegerVariable('ProbImpactTail',
                                'ProbImpactTail',
@@ -33,8 +33,8 @@ def build_bnet(csv_file,
                                'AUROC',
                                NUM_AUROC_BINS))
     for i in range(NUM_X_FLAGS):
-        bn.addArc(f"X{i + 1}", "Prob3")
-    bn.addArc("Prob3", "TriggerDecision")
+        bn.addArc(f"X{i + 1}", "ProbBound")
+    bn.addArc("ProbBound", "TriggerDecision")
     bn.addArc("ProbImpactTail", "TriggerDecision")
     bn.addArc("TriggerDecision", "FAR")
     bn.addArc("TriggerDecision", "HR")
@@ -46,8 +46,8 @@ def build_bnet(csv_file,
     bn.cpt("ProbImpactTail").fillWith([1/NUM_P_BINS]*NUM_P_BINS)
 
     # non root nodes
-    p3_cpt = Prob3(prev_costs, repl_costs, NUM_P_BINS).get_cpt()
-    bn.cpt("Prob3").fillWith(p3_cpt)
+    p3_cpt = ProbBound(prev_costs, repl_costs, NUM_P_BINS).get_cpt_array()
+    bn.cpt("ProbBound").fillWith(p3_cpt)
 
     td_cpt=TriggerDecision(NUM_P_BINS)
     bn.cpt("TriggerDecision").fillWith(td_cpt)
