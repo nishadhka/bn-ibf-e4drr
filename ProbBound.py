@@ -49,8 +49,13 @@ class ProbBound:
 
         prob_bd = 0
         for i in range(len(x_flags)):
+            assert self.rep_costs[i] > 0
             prob_bd += (self.ins_costs[i]/self.rep_costs[i]) * x_flags[i]
-        prob_bd /= np.sum(x_flags)
+        x_sum = np.sum(x_flags)
+        if x_sum > 0:
+            prob_bd /= x_sum
+        else:
+            prob_bd = 0
         return self.br.get_xbin(prob_bd)
 
     def get_cpt_array(self):

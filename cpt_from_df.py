@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 
+import pandas as pd
+
+import pandas as pd
 
 def learn_cpt_from_df(bn, df, nd_name):
     """

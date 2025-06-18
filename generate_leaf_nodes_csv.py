@@ -1,6 +1,9 @@
 import csv
 import random
 
+from globals import LEAF_NODE_NAMES
+
+
 def generate_leaf_nodes_csv(path, num_rows=25):
     # Set random seed for reproducibility (optional)
     random.seed(42)
@@ -10,7 +13,7 @@ def generate_leaf_nodes_csv(path, num_rows=25):
     for i in range(num_rows):
         row = {
             'FAR': round(random.uniform(0, 1), 6),
-            'HT': round(random.uniform(0, 1), 6),
+            'HR': round(random.uniform(0, 1), 6),
             'AUROC': round(random.uniform(0, 1), 6),
             'TriggerDecision': random.choice([0, 1])
         }
@@ -18,7 +21,8 @@ def generate_leaf_nodes_csv(path, num_rows=25):
 
     # Write to CSV file
     with open(path, 'w', newline='') as csvfile:
-        fieldnames = ['FAR', 'HT', 'AUROC', 'TriggerDecision']
+        fieldnames = LEAF_NODE_NAMES
+        fieldnames.append('TriggerDecision')
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         # Write header

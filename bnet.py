@@ -4,6 +4,7 @@ import pandas as pd
 from  cpt_from_df import *
 from ProbBound import *
 from TriggerDecision import *
+from Binner import *
 
 
 def build_bnet(csv_file,
@@ -23,35 +24,32 @@ def build_bnet(csv_file,
 
     """
     bn = gum.BayesNet('Drought Trigger Determination')
+    rg_p = list(range(NUM_P_BINS))
     for i in range(NUM_X_FLAGS):
         bn.add(gum.IntegerVariable(f'X{i + 1}',
                                    f'X{i + 1}',
-                                   range(2)))
+                                   [0, 1]))
     bn.add(gum.IntegerVariable('ProbBound',
                                'ProbBound',
-                               range(NUM_P_BINS)))
+                               rg_p))
     bn.add(gum.IntegerVariable('ProbImpactTail',
                                'ProbImpactTail',
-                               range(NUM_P_BINS)))
+                               rg_p))
     bn.add(gum.IntegerVariable('TriggerDecision',
-                               'TriggerDecision',
-                               range(2)))
-    bn.add(gum.IntegerVariable('FAR',
-                               'FAR',
-                               range(NUM_P_BINS)))
-    bn.add(gum.IntegerVariable('HR',
-                               'HR',
-                               range(NUM_HR_BINS)))
-    bn.add(gum.IntegerVariable('AUROC',
-                               'AUROC',
-                               range(NUM_AUROC_BINS)))
+                             'TriggerDecision',
+                               [0, 1]))
+    for name in LEAF_NODE_NAMES:
+        bn.add(gum.IntegerVariable(name,
+                                   name,
+                                   rg_p))
+
     for i in range(NUM_X_FLAGS):
         bn.addArc(f"X{i + 1}", "ProbBound")
     bn.addArc("ProbBound", "TriggerDecision")
     bn.addArc("ProbImpactTail", "TriggerDecision")
-    bn.addArc("TriggerDecision", "FAR")
-    bn.addArc("TriggerDecision", "HR")
-    bn.addArc("TriggerDecision", "AUROC")
+    for name in LEAF_NODE_NAMES:
+        bn.addArc("TriggerDecision", name)
+
 
     # root nodes
     for i in range(NUM_X_FLAGS):
@@ -66,7 +64,10 @@ def build_bnet(csv_file,
     bn.cpt("TriggerDecision")[:]= td_cpt
 
     df = pd.read_csv(csv_file)
-    learn_cpts_from_df(bn, df, ["FAR", "HR", "AUROC"])
+    br = Binner(NUM_P_BINS)
+    for nd_name in LEAF_NODE_NAMES:
+        df[nd_name] = df[nd_name].apply(br.get_xbin)
+        learn_cpt_from_df(bn, df, nd_name)
 
     return bn
 
