@@ -26,7 +26,7 @@ class TriggerDecision:
         np.array
 
         """
-        shape = (NUM_P_BINS ** 2, 2)
+        shape = (NUM_P_BINS, NUM_P_BINS, 2)
         ar = np.zeros(shape)
         row = 0
         rg = range(NUM_P_BINS)
@@ -34,7 +34,7 @@ class TriggerDecision:
             # print("vbnw",tail_prob_bin, prob_bd_bin)
             for trigger in [0, 1]:
                 if bool(trigger) == (tail_prob_bin > prob_bd_bin):
-                    ar[row, trigger] = 1
+                    ar[tail_prob_bin, prob_bd_bin, trigger] = 1
             row += 1
         return ar
 

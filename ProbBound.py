@@ -47,12 +47,10 @@ class ProbBound:
         assert len(x_flags) == len(self.rep_costs), \
             f"len {x_flags} != len {self.rep_costs}"
 
-        rep_tot = 0
-        ins_tot = 0
+        prob_bd = 0
         for i in range(len(x_flags)):
-            rep_tot += self.rep_costs[i]
-            ins_tot += self.ins_costs[i] * x_flags[i]
-        prob_bd = ins_tot / rep_tot
+            prob_bd += (self.ins_costs[i]/self.rep_costs[i]) * x_flags[i]
+        prob_bd /= np.sum(x_flags)
         return self.br.get_xbin(prob_bd)
 
     def get_cpt_array(self):
@@ -63,14 +61,15 @@ class ProbBound:
         np.array
 
         """
-        num_x = len(self.rep_costs)
-        shape = (2 ** num_x, NUM_P_BINS)
+        shape = [2]* NUM_X_FLAGS
+        shape.append(NUM_P_BINS)
+        # print("xxcf", shape)
         ar = np.zeros(shape)
         row = 0
-        for x_flags in product([0, 1], repeat=num_x):
+        for x_flags in product([0, 1], repeat=NUM_X_FLAGS):
             for prob_bd_bin in range(NUM_P_BINS):
                 if prob_bd_bin == self.get_prob_bd_bin(list(x_flags)):
-                    ar[row, prob_bd_bin] = 1
+                    ar[*x_flags, prob_bd_bin] = 1
                     break
             row += 1
         return ar

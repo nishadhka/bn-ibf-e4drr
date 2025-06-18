@@ -7,15 +7,15 @@ from TriggerDecision import *
 
 
 def build_bnet(csv_file,
-               prev_costs,
-               repl_costs):
+               ins_costs,
+               rep_costs):
     """
 
     Parameters
     ----------
     csv_file: str
-    prev_costs: list[float]
-    repl_costs: list[float]
+    ins_costs: list[float]
+    rep_costs: list[float]
 
     Returns
     -------
@@ -26,25 +26,25 @@ def build_bnet(csv_file,
     for i in range(NUM_X_FLAGS):
         bn.add(gum.IntegerVariable(f'X{i + 1}',
                                    f'X{i + 1}',
-                                   2))
+                                   range(2)))
     bn.add(gum.IntegerVariable('ProbBound',
                                'ProbBound',
-                               NUM_P_BINS))
+                               range(NUM_P_BINS)))
     bn.add(gum.IntegerVariable('ProbImpactTail',
                                'ProbImpactTail',
-                               NUM_P_BINS))
+                               range(NUM_P_BINS)))
     bn.add(gum.IntegerVariable('TriggerDecision',
                                'TriggerDecision',
-                               2))
+                               range(2)))
     bn.add(gum.IntegerVariable('FAR',
                                'FAR',
-                               NUM_FAR_BINS))
+                               range(NUM_P_BINS)))
     bn.add(gum.IntegerVariable('HR',
                                'HR',
-                               NUM_HR_BINS))
+                               range(NUM_HR_BINS)))
     bn.add(gum.IntegerVariable('AUROC',
                                'AUROC',
-                               NUM_AUROC_BINS))
+                               range(NUM_AUROC_BINS)))
     for i in range(NUM_X_FLAGS):
         bn.addArc(f"X{i + 1}", "ProbBound")
     bn.addArc("ProbBound", "TriggerDecision")
@@ -59,11 +59,11 @@ def build_bnet(csv_file,
     bn.cpt("ProbImpactTail").fillWith([1/NUM_P_BINS]*NUM_P_BINS)
 
     # non root nodes
-    p3_cpt = ProbBound(prev_costs, repl_costs).get_cpt_array()
-    bn.cpt("ProbBound").fillWith(p3_cpt)
+    p3_cpt = ProbBound(ins_costs, rep_costs).get_cpt_array()
+    bn.cpt("ProbBound")[:] = p3_cpt
 
     td_cpt=TriggerDecision().get_cpt_array()
-    bn.cpt("TriggerDecision").fillWith(td_cpt)
+    bn.cpt("TriggerDecision")[:]= td_cpt
 
     df = pd.read_csv(csv_file)
     learn_cpts_from_df(bn, df, ["FAR", "HR", "AUROC"])

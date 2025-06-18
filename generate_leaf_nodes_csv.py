@@ -1,0 +1,34 @@
+import csv
+import random
+
+def generate_leaf_nodes_csv(path, num_rows=25):
+    # Set random seed for reproducibility (optional)
+    random.seed(42)
+
+    # Define the data
+    data = []
+    for i in range(num_rows):
+        row = {
+            'FAR': round(random.uniform(0, 1), 6),
+            'HT': round(random.uniform(0, 1), 6),
+            'AUROC': round(random.uniform(0, 1), 6),
+            'TriggerDecision': random.choice([0, 1])
+        }
+        data.append(row)
+
+    # Write to CSV file
+    with open(path, 'w', newline='') as csvfile:
+        fieldnames = ['FAR', 'HT', 'AUROC', 'TriggerDecision']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        # Write header
+        writer.writeheader()
+
+        # Write data rows
+        for row in data:
+            writer.writerow(row)
+
+if __name__ == "__main__":
+    def main():
+        generate_leaf_nodes_csv("data/leaf-nodes.csv")
+    main()
