@@ -4,6 +4,15 @@ from globals import *
 
 
 class ProbBound:
+    """
+
+    Attributes
+    ----------
+    br: Binner
+    ins_costs: list[float]
+    rep_costs: list[float]
+
+    """
 
     def __init__(self, ins_costs, rep_costs):
         """
@@ -27,7 +36,7 @@ class ProbBound:
 
         Parameters
         ----------
-        x_flags: list[bool]
+        x_flags: list[int]
 
         Returns
         -------
@@ -60,7 +69,7 @@ class ProbBound:
         row = 0
         for x_flags in product([0, 1], repeat=num_x):
             for prob_bd_bin in range(NUM_P_BINS):
-                if prob_bd_bin == self.get_prob_bd_bin(x_flags):
+                if prob_bd_bin == self.get_prob_bd_bin(list(x_flags)):
                     ar[row, prob_bd_bin] = 1
                     break
             row += 1

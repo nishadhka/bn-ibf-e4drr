@@ -9,9 +9,22 @@ from TriggerDecision import *
 def build_bnet(csv_file,
                prev_costs,
                repl_costs):
+    """
+
+    Parameters
+    ----------
+    csv_file: str
+    prev_costs: list[float]
+    repl_costs: list[float]
+
+    Returns
+    -------
+    BayesNet
+
+    """
     bn = gum.BayesNet('Drought Trigger Determination')
     for i in range(NUM_X_FLAGS):
-        bn.add(gum.IntegerVariable(f'X{i +}',
+        bn.add(gum.IntegerVariable(f'X{i + 1}',
                                    f'X{i + 1}',
                                    2))
     bn.add(gum.IntegerVariable('ProbBound',
@@ -46,13 +59,15 @@ def build_bnet(csv_file,
     bn.cpt("ProbImpactTail").fillWith([1/NUM_P_BINS]*NUM_P_BINS)
 
     # non root nodes
-    p3_cpt = ProbBound(prev_costs, repl_costs, NUM_P_BINS).get_cpt_array()
+    p3_cpt = ProbBound(prev_costs, repl_costs).get_cpt_array()
     bn.cpt("ProbBound").fillWith(p3_cpt)
 
-    td_cpt=TriggerDecision(NUM_P_BINS)
+    td_cpt=TriggerDecision().get_cpt_array()
     bn.cpt("TriggerDecision").fillWith(td_cpt)
 
     df = pd.read_csv(csv_file)
-    learn_cpt_from_df(bn, df, ["FAR", "HR", "AUROC")
+    learn_cpts_from_df(bn, df, ["FAR", "HR", "AUROC"])
+
+    return bn
 
 
