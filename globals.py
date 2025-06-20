@@ -1,3 +1,5 @@
 NUM_P_BINS = 4
 NUM_X_FLAGS = 3
 LEAF_NODE_NAMES = ["FAR", "HR", "AUROC"]
+MAX_E = 2 # MAX_E = xbin(deviation in E)
+NUM_E = 2 * MAX_E + 1

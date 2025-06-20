@@ -28,14 +28,13 @@ class TriggerDecision:
         """
         shape = (NUM_P_BINS, NUM_P_BINS, 2)
         ar = np.zeros(shape)
-        row = 0
         rg = range(NUM_P_BINS)
-        for tail_prob_bin, prob_bd_bin in product(rg, rg):
-            # print("vbnw",tail_prob_bin, prob_bd_bin)
+        for prob_tail_bin, prob_bd_bin in product(rg, rg):
+            # print("vbnw",prob_tail_bin, prob_bd_bin)
             for trigger in [0, 1]:
-                if bool(trigger) == (tail_prob_bin > prob_bd_bin):
-                    ar[tail_prob_bin, prob_bd_bin, trigger] = 1
-            row += 1
+                if bool(trigger) == (prob_tail_bin > prob_bd_bin):
+                    jj = [trigger, prob_bd_bin, prob_tail_bin]
+                    ar[tuple(reversed(jj))] = 1
         return ar
 
 
@@ -43,7 +42,7 @@ if __name__ == "__main__":
     def main():
         td = TriggerDecision()
         ar = td.get_cpt_array()
-        print("array transpose = "
+        print("array with index order reversed = "
               "P(TriggerDecision|ProbBound, ProbImpactTail)")
         print(ar)
 
