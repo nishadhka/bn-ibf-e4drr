@@ -166,8 +166,8 @@ Wikipedia article on risk matrices (Ref.\cite{wiki-risk-matrix}) agrees.
 \begin{tabular}{|l|l|l|l|}
 \hline
 $\sigma\backslash\delta$ & \cellcolor[HTML]{FFFFC7}Moderate & \cellcolor[HTML]{FFFFC7}Extreme & \cellcolor[HTML]{FFFFC7}Severe \\ \hline
-\cellcolor[HTML]{FFFFC7}MAM & -0.55 & -0.98 & -0.99 \\ \hline
-\cellcolor[HTML]{FFFFC7}JJAS & -0.41 & -0.98 & -0.99 \\ \hline
+\cellcolor[HTML]{FFFFC7}MAM & $-$0.55 & $-$0.98 & $-$0.99 \\ \hline
+\cellcolor[HTML]{FFFFC7}JJAS & $-$0.41 & $-$0.98 & $-$0.99 \\ \hline
 \end{tabular}
 \caption{SPI threshold  for Karamoja, Uganda.
 Cells give $-I^*_\kappa$,
@@ -186,14 +186,56 @@ $I_\kappa^*  =$ impact threshold
 P(\rvI_\kappa\geq I_\kappa^*  ) = \frac{1}{M} \sum_{\mu=1}^{M} \indi(I_{\kappa,\mu} \geq I_\kappa^*) 
 \eeq
 
-$P^*_\kappa=$ probability threshold for drought
+Let $X^i_\kappa\in \bool$ for $i=1,2, 3, \ldots, nx$ represent vulnerability to local problems
+such as high road density, high population density,
+historical 
+catastrophic events, etc.
 
-$C_\kappa=$ cost of drought
-
-$L_\kappa=$ loss of drought
+Let
 
 \beq
-P^*_\kappa = \frac{C_\kappa}{L_\kappa}
+N_\kappa = \sum_{i=1}^{nx}
+X^i_\kappa
+\eeq
+
+$\eps \in \RR$ be a normally distributed random variable
+with mean zero and
+some a priori
+known deviation.
+
+$RC_\kappa^i=$ replacement cost for 
+vulnerability $X^i_\kappa$
+
+$IC_\kappa^i=$  insurance (i.e., preventive) for vulnerability $X^i_\kappa$
+
+Note that insurance always costs
+more than replacement, so
+
+\beq
+0\leq IC_\kappa^i \leq RC_\kappa^i
+\eeq
+
+
+$P^*_\kappa=$ probability threshold for drought
+
+\beq
+f_\kappa(X^1_\kappa, X^2_\kappa,
+\ldots, X^{nx}_\kappa) 
+=\left\{
+\begin{array}{ll}
+\frac{1}{N_\kappa} \sum_{i=1}^{nx}\frac{IC^i_\kappa }{RC^i_\kappa}
+X_\kappa^i
+& \text{if $N_\kappa \neq 0$}
+\\
+0 &\text{if $N_\kappa =0$}
+\end{array}
+\right.
+\eeq
+
+\beq
+P^*_\kappa =
+f_\kappa(X^1_\kappa, X^2_\kappa,
+\ldots, X^{nx}_\kappa) + \eps 
 \eeq
 
 $T_\kappa=$ trigger for drought
@@ -209,12 +251,13 @@ T_\kappa=
 \begin{figure}[h!]
 $$
 \xymatrix{
-\rvX^1 \ar[dr]
-&\rvX^2 \ar[d]
-&\rvX^3\ar[dl]
+\rvX^1_\kappa \ar[dr]
+&\rvX^2_\kappa \ar[d]
+&\rvX^3_\kappa\ar[dl]
 \\
 \rvP(\rvI_\kappa> I^*_\kappa)\ar[d] 
-& \rvP^*_\kappa= C_\kappa/L_\kappa\ar[dl]
+& \rvP^*_\kappa\ar[dl]
+&\eps\ar[l]
 \\
 \rvT_\kappa
 \ar[d]\ar[dr]\ar[drr]
@@ -235,9 +278,6 @@ or longitude is approximately 100 km.
 \label{fig-aa-bnet}
 \end{figure}
 
-Let $\rvX^1, \rvX^2, \ldots$ represent local road density, population density,
-historical 
-catastrophic events, etc.
 
 The TPMs\footnote{TPM=Transition
 Probability Matrix.
@@ -253,13 +293,13 @@ has the TPM: $P(y|x_1, x_2)=
 $, where 
 $\delta(a,b)=\indi(a=b)$ is the Kronecker delta function. }
 
+
+
 \beq\color{blue}
-P^*_\kappa=
-f_\kappa(X^1, X^2, X^3)
+P^*_\kappa =
+f_\kappa(X^1_\kappa, X^2_\kappa,
+\ldots, X^{nx}_\kappa) + \eps 
 \eeq
-where $f_\kappa()$
-is some deterministic
-function to be decided
 
 \beq\color{blue}
 T_\kappa
