@@ -5,6 +5,20 @@ from globals import NUM_P_BINS
 
 class TriggerDecision:
     """
+    Let A = TriggerDecision, pa(TriggerDecision) = ProbBound, ProbImpactTail
+
+    The purpose of this class is to find the CPT (Conditional Probability
+    Table) for the node A. The node will have the same name as this class.
+    The CPT will be given as a numpy array. The innermost index of the array
+    corresponds to node A, and the other tensor indices will correspond to
+    the parent nodes pa(A) of A.
+
+    In the case of A, the CPT is deterministic. This means
+
+    P(A|pa(A)) = delta(A, f(pa(A)))
+
+    where delta(x, y) is the Kronecker delta function, and f(pa(A)) is some
+    function of pa(A).
 
     Attributes
     ----------
@@ -13,13 +27,17 @@ class TriggerDecision:
 
     def __init__(self):
         """
+        Constructor
 
         Parameters
         ----------
+
         """
 
     def get_cpt_array(self):
         """
+        This method returns the CPT of node TriggerDecision as a numpy
+        array. The CPT is deterministic.
 
         Returns
         -------

@@ -5,17 +5,34 @@ from globals import *
 
 class ProbBound:
     """
+    Let A = ProbBound, pa(ProbBound) = X1, X2, X3, ..., E
+
+    The purpose of this class is to find the CPT (Conditional Probability
+    Table) for the node A. The node will have the same name as this class.
+    The CPT will be given as a numpy array. The innermost index of the array
+    corresponds to node A, and the other tensor indices will correspond to
+    the parent nodes pa(A) of A.
+
+    In the case of A, the CPT is deterministic. This means
+
+    P(A|pa(A)) = delta(A, f(pa(A)))
+
+    where delta(x, y) is the Kronecker delta function, and f(pa(A)) is some
+    function of pa(A).
 
     Attributes
     ----------
     br: Binner
     ins_costs: list[float]
+        insurance costs
     rep_costs: list[float]
+        replacement costs
 
     """
 
     def __init__(self, ins_costs, rep_costs):
         """
+        Constructor
 
         Parameters
         ----------
@@ -33,18 +50,24 @@ class ProbBound:
 
     def get_prob_bd_bin(self, e, *x_flags):
         """
+        This method calculates the probability bound (in bin units). This
+        bound equals a deterministic function f(ins_costs, rep_costs,
+        x_flags) plus the noise e
+
 
         Parameters
         ----------
         x_flags: list[int]
+            This is a list of binary integers (0 or 1)
         e: int
+            error (i.e., noise), expressed in bin units, not float units
 
         Returns
         -------
         float
 
         """
-
+        assert all([flag==0 or flag==1 for flag in x_flags])
         assert len(x_flags) == len(self.rep_costs), \
             f"len {x_flags} != len {self.rep_costs}"
 
@@ -66,6 +89,10 @@ class ProbBound:
 
     def get_cpt_array(self):
         """
+        This method returns the CPT of node TriggerDecision as a numpy
+        array. The CPT is a deterministic and is calculated using the method
+        get_prob_bd_bin()
+
 
         Returns
         -------

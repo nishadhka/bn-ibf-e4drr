@@ -11,12 +11,19 @@ def build_bnet(csv_file,
                ins_costs,
                rep_costs):
     """
+    This method calculates the bnet (BayesNet) model for our Drought
+    Anticipatory Action software. It uses the software pyagrum to do so.
+    Some CPTs (TriggerDecision, ProbBound) are deterministic (learned from a
+    deterministic function) whereas other CPTs are empirical probabilities (
+    learned from a csv dataset)
 
     Parameters
     ----------
     csv_file: str
     ins_costs: list[float]
+        insurance costs
     rep_costs: list[float]
+        replacement costs
 
     Returns
     -------

@@ -9,6 +9,10 @@ def learn_cpt_from_df(bn, df, nd_name):
     """
     (modified, from pyagrum docs)
 
+    This method calculates an empirical CPT from a pandas dataframe `df`.
+    The method calculates and stores the CPT for node `nd_name` inside a
+    BayesNet `bn`.
+
     Parameters
     ----------
     bn: gum.BayesNet
@@ -37,6 +41,8 @@ def learn_cpt_from_df(bn, df, nd_name):
 
 def learn_cpts_from_df(bn, df, nd_names=None):
     """
+    This method just iterates the method learn_cpt_from_df() over a list of
+    nodes
 
     Parameters
     ----------
