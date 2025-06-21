@@ -1,5 +1,5 @@
-import pyAgrum as gum
-import pyAgrum.lib.ipython as gnb
+import pyagrum as gum
+import pyagrum.lib.ipython as gnb
 
 # Create a new Bayesian network
 bn = gum.BayesNet('DroughtAnticipatoryAction')

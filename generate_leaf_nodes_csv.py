@@ -7,7 +7,7 @@ from globals import LEAF_NODE_NAMES
 def generate_leaf_nodes_csv(path, num_rows=25):
     """
     This method generates a csv file (synthetic dataset) that has columns
-    FAR, HT, AUROC and TriggerDecision. The first three columns are
+    FAR, HR, AUROC and TriggerDecision. The first three columns are
     probabilities (given in bin units) whereas TriggerDecision = 0 or 1.
     num_rows is the number of rows, not counting first line (header).
 
