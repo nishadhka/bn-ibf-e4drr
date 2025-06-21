@@ -2,6 +2,22 @@ import netCDF4 as nc
 from pprint import pprint
 
 def describe_nc_file(path):
+    """
+    ECMWF uses NetCDF files (suffix .nc)
+    https://confluence.ecmwf.int/display/CKB/What+are+NetCDF+files+and+how+can+I+read+them
+
+    This method is for reading their parameters
+
+
+    Parameters
+    ----------
+    path: str
+
+    Returns
+    -------
+    None
+
+    """
     ds = nc.Dataset(path)
 
     print("metadata dict:")
