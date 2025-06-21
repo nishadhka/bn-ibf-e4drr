@@ -1,6 +1,19 @@
 from collections import OrderedDict
 
-def read_csv_file(in_path):
+def read_acronym_txt_file(in_path):
+    """
+    This method reads a text file in which each line is of the form
+    <acronym>: description. The method creates a dictionary acro_to_desc
+
+    Parameters
+    ----------
+    in_path: str
+
+    Returns
+    -------
+    dict[str, str]
+
+    """
     acro_to_desc = OrderedDict()
     with open(in_path, "r") as f:
         for line in f:
@@ -13,6 +26,20 @@ def read_csv_file(in_path):
 
 
 def write_latex_file(acro_to_desc, out_path):
+    """
+    This method writes a LaTex file at `out_path` in which the items of the
+    dictionary acro_to_desc are listed in alphabetical order of the acronyms.
+
+    Parameters
+    ----------
+    acro_to_desc: dict[str, str]
+    out_path: str
+
+    Returns
+    -------
+    None
+
+    """
     with open(out_path, "w") as f:
         f.write("\\documentclass{article}\n")
         f.write("\\begin{document}\n")
@@ -30,6 +57,6 @@ if __name__ == "__main__":
     def main():
         in_path = "acro.txt"
         out_path = "acro.tex"
-        write_latex_file(read_csv_file(in_path),
+        write_latex_file(read_acronym_txt_file(in_path),
                          out_path)
     main()
