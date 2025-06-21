@@ -201,12 +201,12 @@ X^i_\kappa
 $\eps \in \RR$ be a normally distributed random variable
 with mean zero and
 some a priori
-known deviation.
+given deviation.
 
 $RC_\kappa^i=$ replacement cost for 
 vulnerability $X^i_\kappa$
 
-$IC_\kappa^i=$  insurance (i.e., preventive) for vulnerability $X^i_\kappa$
+$IC_\kappa^i=$  insurance (i.e., preventive) cost for vulnerability $X^i_\kappa$
 
 Note that insurance always costs
 more than replacement, so
@@ -217,6 +217,13 @@ more than replacement, so
 
 
 $P^*_\kappa=$ probability threshold for drought
+
+\beq
+P^*_\kappa =
+f_\kappa(X^1_\kappa, X^2_\kappa,
+\ldots, X^{nx}_\kappa) + \eps 
+\eeq
+where we model the function $f_\kappa()$ by
 
 \beq
 f_\kappa(X^1_\kappa, X^2_\kappa,
@@ -232,11 +239,7 @@ X_\kappa^i
 \right.
 \eeq
 
-\beq
-P^*_\kappa =
-f_\kappa(X^1_\kappa, X^2_\kappa,
-\ldots, X^{nx}_\kappa) + \eps 
-\eeq
+
 
 $T_\kappa=$ trigger for drought
 
@@ -257,7 +260,7 @@ $$
 \\
 \rvP(\rvI_\kappa> I^*_\kappa)\ar[d] 
 & \rvP^*_\kappa\ar[dl]
-&\eps\ar[l]
+&\rv{\eps}\ar[l]
 \\
 \rvT_\kappa
 \ar[d]\ar[dr]\ar[drr]
@@ -320,7 +323,7 @@ AUROC_\kappa)$.
 \noindent {\bf Algorithm for finding best triggers $T^*_\kappa$:}
 
 Enter bnet Fig.\ref{fig-aa-bnet} into bnet software
-such as PyAgrum
+PyAgrum
 (Ref.\cite{pyagrum}).
 Enter into software available
 evidence for
