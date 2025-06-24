@@ -30,29 +30,24 @@ class ProbBound:
 
     """
 
-    def __init__(self, ins_costs, rep_costs):
+    def __init__(self, danger_probs):
         """
         Constructor
 
         Parameters
         ----------
-        ins_costs: list[float]
-            insurance costs
-        rep_costs: list[float]
-            replacement cost
+        danger_probs: list[float]
+            danger probabilities
         """
-        assert len(ins_costs) == len(rep_costs)
-        rg = range(len(rep_costs))
-        assert all([ins_costs[i] <= rep_costs[i] for i in rg])
-        self.ins_costs = ins_costs
-        self.rep_costs = rep_costs
+        rg = range(len(danger_probs))
+        self.danger_probs = danger_probs
         self.br = Binner(NUM_P_BINS, 0, 1)
 
     def get_prob_bd_bin(self, e, *x_flags):
         """
         This method calculates the probability bound (in bin units). This
-        bound equals a deterministic function f(ins_costs, rep_costs,
-        x_flags) plus the noise e
+        bound equals a deterministic function f(danger_probs, x_flags) plus
+        the noise e
 
 
         Parameters
@@ -68,19 +63,18 @@ class ProbBound:
 
         """
         assert all([flag==0 or flag==1 for flag in x_flags])
-        assert len(x_flags) == len(self.rep_costs), \
-            f"len {x_flags} != len {self.rep_costs}"
+        assert len(x_flags) == len(self.danger_probs), \
+            f"len {x_flags} != len {self.danger_probs}"
 
         prob_bd = 0
         for i in range(len(x_flags)):
-            assert self.rep_costs[i] > 0
-            prob_bd += (self.ins_costs[i]/self.rep_costs[i]) * x_flags[i]
+            prob_bd += self.danger_probs[i] * x_flags[i]
         x_sum = np.sum(x_flags)
         if x_sum > 0:
             prob_bd /= x_sum
         else:
             prob_bd = 0
-        prob_bd_bin = self.br.get_xbin(prob_bd) + e
+        prob_bd_bin = self.br.get_xbin(1 - prob_bd) + e
         if prob_bd_bin < 0:
             prob_bd_bin = 0
         if prob_bd_bin >= NUM_P_BINS:
@@ -123,9 +117,8 @@ class ProbBound:
 
 if __name__ == "__main__":
     def main():
-        ins_costs = [3, 4, 3]
-        rep_costs = [6, 12, 5]
-        td = ProbBound(ins_costs, rep_costs)
+        danger_probs = [.1, .5, .7]
+        td = ProbBound(danger_probs)
         ar = td.get_cpt_array()
         print("array with index order reversed = P(ProbBound|X_flags, e)")
         print("array shape=", ar.shape)

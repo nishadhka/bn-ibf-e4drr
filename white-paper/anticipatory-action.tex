@@ -190,6 +190,7 @@ Let $X^i_\kappa\in \bool$ for $i=1,2, 3, \ldots, nx$ represent vulnerability to 
 such as high road density, high population density,
 historical 
 catastrophic events, etc.
+It equals 1 if a particular danger is present, and 0 if not.
 
 Let
 
@@ -208,12 +209,21 @@ vulnerability $X^i_\kappa$
 
 $IC_\kappa^i=$  insurance (i.e., preventive) cost for vulnerability $X^i_\kappa$
 
+
 Note that insurance always costs
 more than replacement, so
 
 \beq
 0\leq IC_\kappa^i \leq RC_\kappa^i
 \eeq
+
+$P_{danger, \kappa}^i=
+\frac{IC_\kappa^i}{RC_\kappa^i}$ probability of danger for Vulnerability $X_\kappa^i$.
+
+Note that less 
+danger 
+means less 
+insurance cost.
 
 
 $P^*_\kappa=$ probability threshold for drought
@@ -230,11 +240,12 @@ f_\kappa(X^1_\kappa, X^2_\kappa,
 \ldots, X^{nx}_\kappa) 
 =\left\{
 \begin{array}{ll}
-\frac{1}{N_\kappa} \sum_{i=1}^{nx}\frac{IC^i_\kappa }{RC^i_\kappa}
+1 -
+\frac{1}{N_\kappa} \sum_{i=1}^{nx}P^i_{danger, \kappa}
 X_\kappa^i
 & \text{if $N_\kappa \neq 0$}
 \\
-0 &\text{if $N_\kappa =0$}
+1 &\text{if $N_\kappa =0$}
 \end{array}
 \right.
 \eeq

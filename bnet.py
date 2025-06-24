@@ -8,8 +8,7 @@ from Binner import *
 
 
 def build_bnet(csv_file,
-               ins_costs,
-               rep_costs):
+               danger_probs):
     """
     This method calculates the bnet (BayesNet) model for our Drought
     Anticipatory Action software. It uses the software pyagrum to do so.
@@ -20,10 +19,8 @@ def build_bnet(csv_file,
     Parameters
     ----------
     csv_file: str
-    ins_costs: list[float]
-        insurance costs
-    rep_costs: list[float]
-        replacement costs
+    danger_probs: list[float]
+        danger probabilities
 
     Returns
     -------
@@ -72,7 +69,7 @@ def build_bnet(csv_file,
     bn.cpt("E").fillWith([1 / NUM_E] * NUM_E)
 
     # non root nodes
-    p3_cpt = ProbBound(ins_costs, rep_costs).get_cpt_array()
+    p3_cpt = ProbBound(danger_probs).get_cpt_array()
     bn.cpt("ProbBound")[:] = p3_cpt
 
     td_cpt=TriggerDecision().get_cpt_array()
@@ -91,8 +88,7 @@ if __name__ == "__main__":
 
     def main():
         path = "data/leaf-nodes.csv"
-        ins_costs = [3, 4, 3]
-        rep_costs = [6, 12, 5]
-        bn = build_bnet(path, ins_costs, rep_costs)
+        danger_probs = [.1, .5, .7]
+        bn = build_bnet(path, danger_probs)
 
     main()
