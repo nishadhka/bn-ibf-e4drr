@@ -23,16 +23,15 @@
 
 
 {\bf Repo} at
-
-\url{https://github.com/nishadhka/bn-ibf-e4drr} 
+{\tiny \url{https://github.com/nishadhka/bn-ibf-e4drr} }
 
 Includes
 \begin{itemize}
 \item python code (well documented with plenty of docstrings)
-\item folder entitled {\tt jupyter\_notebooks} with 3 notebooks
-\item folder entitled {white-paper} with latex code and PDF for {\bf preliminary} white-paper 
+\item folder entitled {\tt jupyter\_notebooks} with 3 jupyter notebooks
+\item folder entitled {\tt white-paper} with latex code and PDF for {\bf preliminary} white-paper 
 
-\url{https://github.com/nishadhka/bn-ibf-e4drr/blob/main/white-paper/anticipatory-action.pdf}
+{\tiny \url{https://github.com/nishadhka/bn-ibf-e4drr/blob/main/white-paper/anticipatory-action.pdf}}
 \end{itemize}
 
 I would appreciate it if you would take a look at the code and read the white paper. Comments from {\color{red} why did you do this instead of that}, or {\color{red} I think this part is wrong, or BS or too technical or unnecessary or obscure} are welcomed and I will attempt to address them.
@@ -75,10 +74,10 @@ Find an automatic method of determining triggering
  probability $P^*$. 
  \begin{itemize}
 
- \item The new method should be better than Nishadh's way of doing this for Karamoja, based on FAR/HR/AUROC. 
+ \item The new method should be better than Nishadh's method of doing this for Karamoja, The latter is based solely on FAR/HR/AUROC. 
  
  \item The new method should take
- into account {\bf antecedents} like population density, historical catastrophes, soil moisture, etc.
+ into account {\bf antecedents} like population density, road density, historical catastrophes, soil moisture, etc.
  \end{itemize}
 
 \end{frame}
@@ -87,11 +86,11 @@ Find an automatic method of determining triggering
 probability $P^*$}
 
 \begin{itemize}
-\item {\bf bnet (Bayesian network)} (see my free,
+\item {\bf bnet (Bayesian network)}, discussed in my free,
 open source book 
-\url{https://github.com/rrtucci/Bayesuvius/raw/master/main.pdf})
-\item Do bnet calculations using {\bf Pyagrum} software at \url{https://pyagrum.readthedocs.io/en/} combined with my auxiliary 
-software
+{\tiny \url{https://github.com/rrtucci/Bayesuvius/raw/master/main.pdf}}
+\item I do bnet calculations using {\bf Pyagrum} software at {\tiny \url{https://pyagrum.readthedocs.io/en/}} combined with a small amount of auxiliary 
+code that I wrote.
 \end{itemize}
 
 
@@ -124,17 +123,19 @@ $$
 
 \begin{frame}{Much Still to Do}
 
+{\color{red} Need Help}
+
 \begin{itemize}
-\item So far, I've only used synthetic  data to train bnet. 
-{\bf Need real data to train it. 
-}
+\item {\bf Need real data to train bnet. 
+} So far, I've only used synthetic  data to train it. 
+
 \item Need to do a lot of work {\bf fine tuning} and
 {\bf integrating} 
 this software with full corpus of DAA 
 (Drought Anticipatory Action) software
 
 \item Need to do {\bf modelling of 
-antecedent  probabilities}.
+antecedent  probabilities}. This requires real data, which I haven't gotten yet.
 
 \end{itemize}
 
