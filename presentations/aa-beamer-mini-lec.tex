@@ -1,0 +1,143 @@
+% Quick start guide
+\documentclass{beamer}
+
+\usetheme {Madrid}
+
+\input{my_beamer.sty}
+
+\definecolor{myred}{RGB}{153, 18, 2}
+\setbeamercolor{structure}{fg=myred}
+
+\title{Determination of Drought Triggering Probability \\via Bayesian Network}
+\author{Robert R. Tucci}
+\institute{ICPAC, www.ar-tiste.xyz}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Links}
+
+
+{\bf Repo} at
+
+\url{https://github.com/nishadhka/bn-ibf-e4drr} 
+
+Includes
+\begin{itemize}
+\item python code (well documented with plenty of docstrings)
+\item folder entitled {\tt jupyter\_notebooks} with 3 notebooks
+\item folder entitled {white-paper} with latex code and PDF for {\bf preliminary} white-paper 
+
+\url{https://github.com/nishadhka/bn-ibf-e4drr/blob/main/white-paper/anticipatory-action.pdf}
+\end{itemize}
+
+I would appreciate it if you would take a look at the code and read the white paper. Comments from {\color{red} why did you do this instead of that}, or {\color{red} I think this part is wrong, or BS or too technical or unnecessary or obscure} are welcomed and I will attempt to address them.
+\end{frame}
+
+\begin{frame}{Brief review of Tim Palmer ECMWF Theory}
+
+\begin{description}
+\item[$I^*  =$] impact threshold 
+   for drought, it equals minus an SPI (Standardized Precipitation Index)
+   
+\item[$\mu=$] ensemble member index
+
+\item[$M=$] number of ensemble members, 51 for $ECMWF$
+
+\item[$\indi()=$] indicator function. $\indi(a>b)$
+equals 1 if $a>b$ and is zero otherwise
+
+\item[$T=$] trigger for drought
+\item[$P^*=$] threshold probability that triggers a  drought warning
+
+\end{description}
+
+$$
+\underbrace{P(\rvI\geq I^*  )}_{
+\text{probability that impact is greater than threshold $I^*$}}= \frac{1}{M} \sum_{\mu=1}^{M} \indi(I_{\mu} \geq I^*) 
+$$
+
+
+
+$$
+T=
+\indi\left[P(\rvI\geq I^*  ) > P^*\right]
+$$
+\end{frame}
+
+\begin{frame}{Problem to solve}
+
+Find an automatic method of determining triggering
+ probability $P^*$. 
+ \begin{itemize}
+
+ \item The new method should be better than Nishadh's way of doing this for Karamoja, based on FAR/HR/AUROC. 
+ 
+ \item The new method should take
+ into account {\bf antecedents} like population density, historical catastrophes, soil moisture, etc.
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bnet for determining triggering 
+probability $P^*$}
+
+\begin{itemize}
+\item {\bf bnet (Bayesian network)} (see my free,
+open source book 
+\url{https://github.com/rrtucci/Bayesuvius/raw/master/main.pdf})
+\item Do bnet calculations using {\bf Pyagrum} software at \url{https://pyagrum.readthedocs.io/en/} combined with my auxiliary 
+software
+\end{itemize}
+
+
+$$
+\xymatrix{
+\rvX^1 \ar[dr]
+&\rvX^2 \ar[d]
+&\rvX^3\ar[dl]
+\\
+\rvP(\rvI> I^*)\ar[d] 
+& \rvP^*\ar[dl]
+&\rv{\eps}\ar[l]
+\\
+\rvT
+\ar[d]\ar[dr]\ar[drr]
+\\
+\ul{FAR} 
+&\ul{HR}
+&\ul{AUROC}
+}
+\begin{array}{l}
+\text{$\rvX^1, \rvX^2, \rvX^3$ are antecedents}
+\\
+\text{$\rv{\eps}$ is noise}
+\end{array}
+$$
+
+
+\end{frame}
+
+\begin{frame}{Much Still to Do}
+
+\begin{itemize}
+\item So far, I've only used synthetic  data to train bnet. 
+{\bf Need real data to train it. 
+}
+\item Need to do a lot of work {\bf fine tuning} and
+{\bf integrating} 
+this software with full corpus of DAA 
+(Drought Anticipatory Action) software
+
+\item Need to do {\bf modelling of 
+antecedent  probabilities}.
+
+\end{itemize}
+
+\end{frame}
+
+\end{document}
