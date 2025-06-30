@@ -194,10 +194,10 @@ It equals 1 if a particular danger is present, and 0 if not.
 
 Let
 
-\beq
-N_\kappa = \sum_{i=1}^{nx}
-X^i_\kappa
-\eeq
+%\beq
+%N_\kappa = \sum_{i=1}^{nx}
+%X^i_\kappa
+%\eeq
 
 $\eps \in \RR$ be a normally distributed random variable
 with mean zero and
@@ -238,16 +238,11 @@ where we model the function $f_\kappa()$ by
 \beq
 f_\kappa(X^1_\kappa, X^2_\kappa,
 \ldots, X^{nx}_\kappa) 
-=\left\{
-\begin{array}{ll}
+=
 1 -
-\frac{1}{N_\kappa} \sum_{i=1}^{nx}P^i_{danger, \kappa}
-X_\kappa^i
-& \text{if $N_\kappa \neq 0$}
-\\
-1 &\text{if $N_\kappa =0$}
-\end{array}
-\right.
+\max\{P^i_{danger, \kappa}
+| \text{$i$ such that 
+$X_\kappa^i \neq 0$}\}
 \eeq
 
 
