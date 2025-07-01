@@ -246,13 +246,14 @@ X_\kappa^i\}
 
 
 
-$T_\kappa=$ trigger for drought
+$TD_\kappa=$ trigger decision to do drought warning
 
-$P^*_\kappa=$ threshold probability for drought warning
+$P^*_\kappa=$ threshold probability that triggers a  drought warning
+
 
 
 \beq
-T_\kappa=
+TD_\kappa=
 \indi\left[P(\rvI_\kappa\geq I_\kappa^*  ) > P^*_\kappa\right]
 \eeq
 
@@ -269,7 +270,7 @@ $$
 & \rvP^*_\kappa\ar[dl]
 &\rv{\eps}\ar[l]
 \\
-\rvT_\kappa
+\rv{TD}_\kappa
 \ar[d]\ar[dr]\ar[drr]
 \\
 \ul{FAR}_\kappa 
@@ -312,14 +313,14 @@ f_\kappa(X^1_\kappa, X^2_\kappa,
 \eeq
 
 \beq\color{blue}
-T_\kappa
+TD_\kappa
 =
 \indi[
 P(\rvI_\kappa>I^*_\kappa) >P^*_\kappa]
 \eeq
 
 \beq\color{blue}
-P(Y_\kappa^i|T_\kappa)
+P(Y_\kappa^i|TD_\kappa)
 = \text{to be learned empirically from dataset}
 \eeq
 where $(Y_\kappa^1, Y_\kappa^2, Y_\kappa^3) =
@@ -340,9 +341,9 @@ Allow software
 to
 infer the 
 distribution of 
-$\rvT^*_\kappa\in\bool$.
+$P^*_\kappa$.
 Choose for
-$T^*_\kappa$
+$P^*_\kappa$
 the state
 with maximum 
 probability. 

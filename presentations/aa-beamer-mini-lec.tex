@@ -50,7 +50,7 @@ I would appreciate it if you would take a look at the code and read the white pa
 \item[$\indi()=$] indicator function. $\indi(a>b)$
 equals 1 if $a>b$ and is zero otherwise
 
-\item[$T=$] trigger for drought
+\item[$TD=$] trigger decision to do drought warning
 \item[$P^*=$] threshold probability that triggers a  drought warning
 
 \end{description}
@@ -63,7 +63,7 @@ $$
 
 
 $$
-T=
+TD=
 \indi\left[P(\rvI\geq I^*  ) > P^*\right]
 $$
 \end{frame}
@@ -104,7 +104,7 @@ $$
 & \rvP^*\ar[dl]
 &\rv{\eps}\ar[l]
 \\
-\rvT
+\rv{TD}
 \ar[d]\ar[dr]\ar[drr]
 \\
 \ul{FAR} 
